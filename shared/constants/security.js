@@ -1,7 +1,18 @@
+"use strict";
 // shared/constants/security.ts
-import crypto from 'crypto';
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.SECURITY_LOGGING = exports.ANTI_CHEAT = exports.SECURITY_CONFIG = exports.VALIDATION = exports.RATE_LIMITS = void 0;
+exports.generateSecureRoomCode = generateSecureRoomCode;
+exports.sanitizePlayerName = sanitizePlayerName;
+exports.sanitizeChatMessage = sanitizeChatMessage;
+exports.validateRoomCode = validateRoomCode;
+exports.validatePlayerId = validatePlayerId;
+const crypto_1 = __importDefault(require("crypto"));
 // Rate limiting constants
-export const RATE_LIMITS = {
+exports.RATE_LIMITS = {
     // Connection limits
     MAX_CONNECTIONS_PER_IP: 30,
     CONNECTION_ATTEMPT_WINDOW: 60000, // 1 minute
@@ -15,7 +26,7 @@ export const RATE_LIMITS = {
     ROOM_CREATION_COOLDOWN: 5000, // 5 seconds
 };
 // Input validation constants
-export const VALIDATION = {
+exports.VALIDATION = {
     PLAYER_NAME: {
         MIN_LENGTH: 2,
         MAX_LENGTH: 20,
@@ -45,42 +56,42 @@ export const VALIDATION = {
     }
 };
 // Secure room code generation
-export function generateSecureRoomCode() {
-    const chars = VALIDATION.ROOM_CODE.CLEAR_CHARS;
+function generateSecureRoomCode() {
+    const chars = exports.VALIDATION.ROOM_CODE.CLEAR_CHARS;
     let result = '';
     // Use crypto.randomBytes for cryptographically secure random generation
-    const bytes = crypto.randomBytes(VALIDATION.ROOM_CODE.LENGTH);
-    for (let i = 0; i < VALIDATION.ROOM_CODE.LENGTH; i++) {
+    const bytes = crypto_1.default.randomBytes(exports.VALIDATION.ROOM_CODE.LENGTH);
+    for (let i = 0; i < exports.VALIDATION.ROOM_CODE.LENGTH; i++) {
         result += chars[bytes[i] % chars.length];
     }
     return result;
 }
 // Input sanitization functions
-export function sanitizePlayerName(name) {
+function sanitizePlayerName(name) {
     if (!name || typeof name !== 'string') {
         throw new Error('Invalid player name');
     }
     // Trim and normalize
     const trimmed = name.trim();
     // Length validation
-    if (trimmed.length < VALIDATION.PLAYER_NAME.MIN_LENGTH ||
-        trimmed.length > VALIDATION.PLAYER_NAME.MAX_LENGTH) {
-        throw new Error(`Player name must be ${VALIDATION.PLAYER_NAME.MIN_LENGTH}-${VALIDATION.PLAYER_NAME.MAX_LENGTH} characters`);
+    if (trimmed.length < exports.VALIDATION.PLAYER_NAME.MIN_LENGTH ||
+        trimmed.length > exports.VALIDATION.PLAYER_NAME.MAX_LENGTH) {
+        throw new Error(`Player name must be ${exports.VALIDATION.PLAYER_NAME.MIN_LENGTH}-${exports.VALIDATION.PLAYER_NAME.MAX_LENGTH} characters`);
     }
     // Character validation
-    if (!VALIDATION.PLAYER_NAME.ALLOWED_CHARS.test(trimmed)) {
+    if (!exports.VALIDATION.PLAYER_NAME.ALLOWED_CHARS.test(trimmed)) {
         throw new Error('Player name contains invalid characters');
     }
     // Forbidden words check
     const lowerName = trimmed.toLowerCase();
-    for (const word of VALIDATION.PLAYER_NAME.FORBIDDEN_WORDS) {
+    for (const word of exports.VALIDATION.PLAYER_NAME.FORBIDDEN_WORDS) {
         if (lowerName.includes(word.toLowerCase())) {
             throw new Error('Player name contains forbidden words');
         }
     }
     return trimmed;
 }
-export function sanitizeChatMessage(message) {
+function sanitizeChatMessage(message) {
     if (!message || typeof message !== 'string') {
         throw new Error('Invalid message');
     }
@@ -89,11 +100,11 @@ export function sanitizeChatMessage(message) {
     if (trimmed.length === 0) {
         throw new Error('Message cannot be empty');
     }
-    if (trimmed.length > VALIDATION.CHAT_MESSAGE.MAX_LENGTH) {
-        throw new Error(`Message too long (max ${VALIDATION.CHAT_MESSAGE.MAX_LENGTH} characters)`);
+    if (trimmed.length > exports.VALIDATION.CHAT_MESSAGE.MAX_LENGTH) {
+        throw new Error(`Message too long (max ${exports.VALIDATION.CHAT_MESSAGE.MAX_LENGTH} characters)`);
     }
     // Spam detection
-    const { MAX_REPEATED_CHARS, MAX_CAPS_PERCENTAGE, MIN_UNIQUE_CHARS } = VALIDATION.CHAT_MESSAGE.SPAM_DETECTION;
+    const { MAX_REPEATED_CHARS, MAX_CAPS_PERCENTAGE, MIN_UNIQUE_CHARS } = exports.VALIDATION.CHAT_MESSAGE.SPAM_DETECTION;
     // Check for repeated characters
     let maxRepeated = 0;
     let currentRepeated = 1;
@@ -126,7 +137,7 @@ export function sanitizeChatMessage(message) {
     }
     // Forbidden words check
     const lowerMessage = trimmed.toLowerCase();
-    for (const word of VALIDATION.CHAT_MESSAGE.FORBIDDEN_WORDS) {
+    for (const word of exports.VALIDATION.CHAT_MESSAGE.FORBIDDEN_WORDS) {
         if (lowerMessage.includes(word.toLowerCase())) {
             // Replace with asterisks instead of throwing error
             const regex = new RegExp(word, 'gi');
@@ -136,14 +147,14 @@ export function sanitizeChatMessage(message) {
     return trimmed;
 }
 // Data validation functions
-export function validateRoomCode(code) {
+function validateRoomCode(code) {
     if (!code || typeof code !== 'string') {
         return false;
     }
-    return code.length === VALIDATION.ROOM_CODE.LENGTH &&
+    return code.length === exports.VALIDATION.ROOM_CODE.LENGTH &&
         /^[A-Z0-9]+$/.test(code);
 }
-export function validatePlayerId(id) {
+function validatePlayerId(id) {
     if (!id || typeof id !== 'string') {
         return false;
     }
@@ -152,7 +163,7 @@ export function validatePlayerId(id) {
     return uuidRegex.test(id);
 }
 // Security headers and CORS configuration
-export const SECURITY_CONFIG = {
+exports.SECURITY_CONFIG = {
     CORS: {
         origin: process.env.NODE_ENV === 'production'
             ? ['https://your-domain.com'] // Replace with actual domain
@@ -169,7 +180,7 @@ export const SECURITY_CONFIG = {
         'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;"
     },
     SESSION: {
-        SECRET: process.env.SESSION_SECRET || crypto.randomBytes(32).toString('hex'),
+        SECRET: process.env.SESSION_SECRET || crypto_1.default.randomBytes(32).toString('hex'),
         MAX_AGE: 24 * 60 * 60 * 1000, // 24 hours
         SECURE: process.env.NODE_ENV === 'production',
         HTTP_ONLY: true,
@@ -177,7 +188,7 @@ export const SECURITY_CONFIG = {
     }
 };
 // Anti-cheat and tamper detection
-export const ANTI_CHEAT = {
+exports.ANTI_CHEAT = {
     MAX_ACTION_FREQUENCY: 100, // Max actions per minute
     SUSPICIOUS_PATTERNS: {
         RAPID_VOTING: 10, // votes per second
@@ -192,7 +203,7 @@ export const ANTI_CHEAT = {
     }
 };
 // Logging and monitoring
-export const SECURITY_LOGGING = {
+exports.SECURITY_LOGGING = {
     LOG_FAILED_LOGINS: true,
     LOG_SUSPICIOUS_ACTIVITY: true,
     LOG_RATE_LIMIT_VIOLATIONS: true,

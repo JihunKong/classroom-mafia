@@ -13,6 +13,10 @@
     "isolatedModules": false,
     "outDir": "./dist",
     "rootDir": "..",
+    "baseUrl": "./",
+    "paths": {
+      "../../shared/*": ["../shared/*"]
+    },
     "types": ["node"]
   },
   "include": ["src/**/*", "../shared/**/*"],

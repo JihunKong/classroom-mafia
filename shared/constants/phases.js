@@ -1,6 +1,9 @@
+"use strict";
 // shared/constants/phases.ts
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.TTS_MESSAGES = exports.PHASE_UI_CONFIGS = exports.DEATH_ACTION_ROLES = exports.DAY_ACTION_ROLES = exports.NIGHT_ACTION_ROLES = exports.PHASE_TRANSITIONS = exports.PHASE_TIMERS = exports.PHASE_CONFIGS = void 0;
 // 페이즈별 설정
-export const PHASE_CONFIGS = {
+exports.PHASE_CONFIGS = {
     waiting: {
         id: 'waiting',
         name: '대기실',
@@ -74,7 +77,7 @@ export const PHASE_CONFIGS = {
     }
 };
 // 타이머 설정 (초 단위)
-export const PHASE_TIMERS = {
+exports.PHASE_TIMERS = {
     DAY_DISCUSSION: 180, // 3분
     VOTING: 60, // 1분
     EXECUTION_VOTE: 30, // 30초
@@ -82,7 +85,7 @@ export const PHASE_TIMERS = {
     NIGHT_RESULT: 10, // 10초
     ROLE_REVEAL: 5, // 5초
 };
-export const PHASE_TRANSITIONS = [
+exports.PHASE_TRANSITIONS = [
     {
         from: 'waiting',
         to: 'starting',
@@ -136,7 +139,7 @@ export const PHASE_TRANSITIONS = [
         to: 'nightResult',
         condition: (gameState) => {
             // 모든 액션이 완료되었거나 시간이 끝났을 때
-            const aliveWithActions = gameState.players.filter((p) => p.isAlive && NIGHT_ACTION_ROLES.includes(p.role));
+            const aliveWithActions = gameState.players.filter((p) => p.isAlive && exports.NIGHT_ACTION_ROLES.includes(p.role));
             const actionsComplete = aliveWithActions.every((p) => gameState.nightActions[p.id] !== undefined);
             return gameState.timeLeft === 0 || actionsComplete;
         }
@@ -161,13 +164,13 @@ export const PHASE_TRANSITIONS = [
     }
 ];
 // 밤에 행동하는 역할들
-export const NIGHT_ACTION_ROLES = ['mafia', 'spy', 'werewolf', 'doubleAgent', 'doctor', 'police', 'detective', 'reporter', 'bartender', 'wizard', 'medium', 'thief', 'illusionist'];
+exports.NIGHT_ACTION_ROLES = ['mafia', 'spy', 'werewolf', 'doubleAgent', 'doctor', 'police', 'detective', 'reporter', 'bartender', 'wizard', 'medium', 'thief', 'illusionist'];
 // 낮에 행동하는 역할들  
-export const DAY_ACTION_ROLES = ['cheerleader'];
+exports.DAY_ACTION_ROLES = ['cheerleader'];
 // 죽을 때 행동하는 역할들
-export const DEATH_ACTION_ROLES = ['terrorist', 'ghost'];
+exports.DEATH_ACTION_ROLES = ['terrorist', 'ghost'];
 // 페이즈별 UI 설정
-export const PHASE_UI_CONFIGS = {
+exports.PHASE_UI_CONFIGS = {
     waiting: {
         backgroundColor: '#f3f4f6',
         icon: '⏳',
@@ -228,7 +231,7 @@ export const PHASE_UI_CONFIGS = {
     }
 };
 // TTS 메시지 템플릿
-export const TTS_MESSAGES = {
+exports.TTS_MESSAGES = {
     gameStart: '게임이 시작됩니다. 각자의 역할을 확인해주세요.',
     dayStart: (day, deaths) => {
         if (deaths.length === 0) {

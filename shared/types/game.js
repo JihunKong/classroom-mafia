@@ -1,2 +1,3 @@
+"use strict";
 // shared/types/game.ts
-export {};
+Object.defineProperty(exports, "__esModule", { value: true });

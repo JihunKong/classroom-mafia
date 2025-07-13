@@ -1,9 +1,16 @@
+"use strict";
 // shared/constants/roles.ts
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ROLE_ACTIONS = exports.ROLES = exports.ROLE_DISTRIBUTIONS = exports.MAX_PLAYERS = exports.MIN_PLAYERS = void 0;
+exports.isValidPlayerCount = isValidPlayerCount;
+exports.canUseRole = canUseRole;
+exports.createRoleArray = createRoleArray;
+exports.getTeamCounts = getTeamCounts;
 // 최소/최대 인원 설정
-export const MIN_PLAYERS = 6;
-export const MAX_PLAYERS = 20;
+exports.MIN_PLAYERS = 6;
+exports.MAX_PLAYERS = 20;
 // 인원수별 역할 배분 설정
-export const ROLE_DISTRIBUTIONS = {
+exports.ROLE_DISTRIBUTIONS = {
     6: {
         mafia: 1,
         citizen: 4,
@@ -140,7 +147,7 @@ export const ROLE_DISTRIBUTIONS = {
     }
 };
 // 역할 정의
-export const ROLES = {
+exports.ROLES = {
     // ===== 마피아 팀 =====
     mafia: {
         id: 'mafia',
@@ -347,19 +354,19 @@ export const ROLES = {
     }
 };
 // 역할 배분 유효성 검사
-export function isValidPlayerCount(count) {
-    return count >= MIN_PLAYERS && count <= MAX_PLAYERS;
+function isValidPlayerCount(count) {
+    return count >= exports.MIN_PLAYERS && count <= exports.MAX_PLAYERS;
 }
 // 커스텀 역할 설정 가능 여부 확인
-export function canUseRole(roleId, playerCount) {
-    const distribution = ROLE_DISTRIBUTIONS[playerCount];
+function canUseRole(roleId, playerCount) {
+    const distribution = exports.ROLE_DISTRIBUTIONS[playerCount];
     if (!distribution)
         return false;
     return roleId in distribution && distribution[roleId] > 0;
 }
 // 역할 배열 생성 (실제 게임에서 사용)
-export function createRoleArray(playerCount) {
-    const distribution = ROLE_DISTRIBUTIONS[playerCount];
+function createRoleArray(playerCount) {
+    const distribution = exports.ROLE_DISTRIBUTIONS[playerCount];
     if (!distribution) {
         throw new Error(`Invalid player count: ${playerCount}`);
     }
@@ -372,15 +379,15 @@ export function createRoleArray(playerCount) {
     return roles;
 }
 // 팀별 인원수 계산
-export function getTeamCounts(playerCount) {
-    const distribution = ROLE_DISTRIBUTIONS[playerCount];
+function getTeamCounts(playerCount) {
+    const distribution = exports.ROLE_DISTRIBUTIONS[playerCount];
     if (!distribution) {
         throw new Error(`Invalid player count: ${playerCount}`);
     }
     let mafiaCount = 0;
     let citizenCount = 0;
     Object.entries(distribution).forEach(([role, count]) => {
-        const roleInfo = ROLES[role];
+        const roleInfo = exports.ROLES[role];
         if (roleInfo.team === 'mafia') {
             mafiaCount += count;
         }
@@ -391,7 +398,7 @@ export function getTeamCounts(playerCount) {
     });
     return { citizen: citizenCount, mafia: mafiaCount };
 }
-export const ROLE_ACTIONS = {
+exports.ROLE_ACTIONS = {
     mafia: {
         roleId: 'mafia',
         phase: 'night',
