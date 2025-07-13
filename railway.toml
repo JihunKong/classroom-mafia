@@ -1,0 +1,15 @@
+[build]
+builder = "nixpacks"
+buildCommand = "npm run install:all && npm run build"
+
+[deploy]
+startCommand = "npm start"
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 10
+
+[[services]]
+name = "korean-mafia-game"
+port = 3001
+
+[services.domains]
+"classroom-mafia-production.up.railway.app" = { primary = true }
