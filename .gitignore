@@ -1,0 +1,66 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Testing
+coverage/
+playwright-report/
+playwright/.cache/
+test-results/
+*.log
+
+# Production
+dist/
+build/
+
+# Misc
+.DS_Store
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Example projects
+example1.Mafia_Game-main/
+example2.web31-MAFIA31-main/
+
+# Test artifacts
+screenshots/
+screenshots-progressive/
+screenshots-scenarios/
+test-*.js
+demo-*.js
+*.png
+
+# Generated files
+server.log
+client.log
+dev.log
+detailed-logs.txt
+detailed-test-logs.txt
+full-timer-logs.txt
+night-phase-logs.txt
+server-logs.txt

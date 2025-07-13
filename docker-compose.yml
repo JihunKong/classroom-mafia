@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  client:
+    container_name: mafia-client
+    build:
+      context: .
+      dockerfile: ./client/Dockerfile
+    networks:
+      - mafia-network
+    depends_on:
+      - server
+    restart: unless-stopped
+
+  server:
+    container_name: mafia-server
+    build:
+      context: .
+      dockerfile: ./server/Dockerfile
+    networks:
+      - mafia-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  mafia-network:
+    driver: bridge
+    name: mafia-network
+
+volumes:
+  shared-data:

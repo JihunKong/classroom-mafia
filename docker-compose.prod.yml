@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  client:
+    build:
+      target: production
+      args:
+        - VITE_SERVER_URL=${VITE_SERVER_URL:-http://localhost:3001}
+        - VITE_SOCKET_URL=${VITE_SOCKET_URL:-http://localhost:3001}
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - NODE_ENV=production
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+  server:
+    build:
+      target: production
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - CLIENT_URL=${CLIENT_URL:-http://localhost}
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M

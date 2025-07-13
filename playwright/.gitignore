@@ -1,0 +1,16 @@
+# Playwright
+/test-results/
+/playwright-report/
+/playwright/.cache/
+/tests/quick-*.spec.ts
+
+# Dependencies
+node_modules/
+
+# Environment
+.env.local
+
+# Screenshots and videos
+screenshots/
+videos/
+traces/

@@ -1,0 +1,26 @@
+{
+  "name": "korean-mafia-game-playwright-tests",
+  "version": "1.0.0",
+  "description": "Playwright E2E tests for Korean Mafia Game with maximum player capacity",
+  "type": "module",
+  "scripts": {
+    "test": "playwright test",
+    "test:debug": "playwright test --debug",
+    "test:headed": "playwright test --headed",
+    "test:20players": "playwright test tests/mafia-20-players.spec.ts",
+    "test:full-game": "playwright test tests/mafia-full-game.spec.ts",
+    "test:performance": "playwright test tests/mafia-performance.spec.ts",
+    "test:roles": "playwright test tests/mafia-roles.spec.ts",
+    "test:ui": "playwright test --ui",
+    "report": "playwright show-report",
+    "install-deps": "playwright install"
+  },
+  "dependencies": {
+    "@playwright/test": "^1.45.0",
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.17.6",
+    "@types/node": "^20.14.0"
+  }
+}

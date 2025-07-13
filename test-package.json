@@ -1,0 +1,11 @@
+{
+  "name": "mafia-game-test",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "node test-6-players.js"
+  },
+  "dependencies": {
+    "socket.io-client": "^4.7.2"
+  }
+}

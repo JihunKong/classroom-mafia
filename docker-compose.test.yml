@@ -1,0 +1,101 @@
+# docker-compose.test.yml
+# Docker Compose configuration for testing Korean Mafia game
+
+version: '3.8'
+
+services:
+  # Server service for testing
+  mafia-server-test:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: mafia-server-test
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=test
+      - PORT=3001
+      - CLIENT_URL=http://localhost:5173
+      - CORS_ORIGIN=http://localhost:5173
+    networks:
+      - mafia-test-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Client service for testing  
+  mafia-client-test:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: mafia-client-test
+    ports:
+      - "5173:80"
+    environment:
+      - VITE_SERVER_URL=http://localhost:3001
+      - VITE_SOCKET_URL=http://localhost:3001
+    depends_on:
+      mafia-server-test:
+        condition: service_healthy
+    networks:
+      - mafia-test-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Playwright test runner
+  playwright-tests:
+    build:
+      context: ./playwright
+      dockerfile: Dockerfile
+    container_name: mafia-playwright-tests
+    environment:
+      - BASE_URL=http://mafia-client-test
+      - SERVER_URL=http://mafia-server-test:3001
+      - CI=true
+      - PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+    volumes:
+      - ./playwright/test-results:/app/test-results
+      - ./playwright/playwright-report:/app/playwright-report
+      - ./playwright/tests:/app/tests
+    depends_on:
+      mafia-server-test:
+        condition: service_healthy
+      mafia-client-test:
+        condition: service_healthy
+    networks:
+      - mafia-test-network
+    command: ["npm", "run", "test"]
+
+  # Performance monitoring service
+  performance-monitor:
+    image: prom/prometheus:latest
+    container_name: mafia-performance-monitor
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - mafia-test-network
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+
+networks:
+  mafia-test-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+volumes:
+  test-results:
+  playwright-report:

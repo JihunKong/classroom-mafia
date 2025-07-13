@@ -1,0 +1,174 @@
+// client/src/hooks/useTeacherSocket.ts
+
+import { useEffect, useState, useRef } from 'react'
+import io, { Socket } from 'socket.io-client'
+
+const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:3001'
+
+interface TeacherSocketState {
+  socket: Socket | null
+  isConnected: boolean
+  isAuthenticated: boolean
+  teacherData: {
+    teacherId: string
+    teacherName: string
+    capabilities: any
+  } | null
+  error: string | null
+}
+
+export const useTeacherSocket = () => {
+  const [state, setState] = useState<TeacherSocketState>({
+    socket: null,
+    isConnected: false,
+    isAuthenticated: false,
+    teacherData: null,
+    error: null
+  })
+
+  const socketRef = useRef<Socket | null>(null)
+  const reconnectTimeoutRef = useRef<ReturnType<typeof setTimeout>>()
+
+  const connectTeacherSocket = () => {
+    console.log('Connecting to teacher namespace...')
+    
+    // Disconnect existing socket if any
+    if (socketRef.current) {
+      socketRef.current.disconnect()
+    }
+
+    // Create new socket connection to teacher namespace
+    const socket = io(`${SOCKET_URL}/teacher`, {
+      transports: ['websocket', 'polling'],
+      timeout: 20000,
+      forceNew: true
+    })
+
+    socketRef.current = socket
+
+    socket.on('connect', () => {
+      console.log('Teacher socket connected')
+      setState(prev => ({ 
+        ...prev, 
+        socket, 
+        isConnected: true, 
+        error: null 
+      }))
+    })
+
+    socket.on('disconnect', (reason) => {
+      console.log('Teacher socket disconnected:', reason)
+      setState(prev => ({ 
+        ...prev, 
+        isConnected: false,
+        isAuthenticated: false,
+        teacherData: null,
+        error: 'Connection lost'
+      }))
+
+      // Auto-reconnect after 3 seconds if not manually disconnected
+      if (reason !== 'io client disconnect') {
+        reconnectTimeoutRef.current = setTimeout(() => {
+          connectTeacherSocket()
+        }, 3000)
+      }
+    })
+
+    socket.on('teacher:authenticated', (data) => {
+      console.log('Teacher authenticated:', data)
+      setState(prev => ({ 
+        ...prev, 
+        isAuthenticated: true,
+        teacherData: {
+          teacherId: data.teacherId,
+          teacherName: data.teacherName,
+          capabilities: data.capabilities
+        },
+        error: null
+      }))
+    })
+
+    socket.on('teacher:authFailed', (data) => {
+      console.log('Teacher authentication failed:', data)
+      setState(prev => ({ 
+        ...prev, 
+        isAuthenticated: false,
+        teacherData: null,
+        error: data.message || 'Authentication failed'
+      }))
+    })
+
+    socket.on('connect_error', (error) => {
+      console.error('Teacher socket connection error:', error)
+      setState(prev => ({ 
+        ...prev, 
+        error: 'Connection failed'
+      }))
+    })
+
+    socket.on('error', (data) => {
+      console.error('Teacher socket error:', data)
+      setState(prev => ({ 
+        ...prev, 
+        error: data.message || 'Unknown error'
+      }))
+    })
+  }
+
+  const authenticateTeacher = (teacherName: string, accessCode: string) => {
+    if (state.socket && state.isConnected) {
+      console.log('Attempting teacher authentication...')
+      setState(prev => ({ ...prev, error: null }))
+      state.socket.emit('teacher:authenticate', {
+        teacherName,
+        accessCode
+      })
+    } else {
+      setState(prev => ({ 
+        ...prev, 
+        error: 'Not connected to server'
+      }))
+    }
+  }
+
+  const disconnectTeacher = () => {
+    console.log('Disconnecting teacher socket...')
+    
+    // Clear any pending reconnection
+    if (reconnectTimeoutRef.current) {
+      clearTimeout(reconnectTimeoutRef.current)
+    }
+
+    if (socketRef.current) {
+      socketRef.current.disconnect()
+      socketRef.current = null
+    }
+
+    setState({
+      socket: null,
+      isConnected: false,
+      isAuthenticated: false,
+      teacherData: null,
+      error: null
+    })
+  }
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (reconnectTimeoutRef.current) {
+        clearTimeout(reconnectTimeoutRef.current)
+      }
+      if (socketRef.current) {
+        socketRef.current.disconnect()
+      }
+    }
+  }, [])
+
+  return {
+    ...state,
+    connectTeacherSocket,
+    authenticateTeacher,
+    disconnectTeacher
+  }
+}

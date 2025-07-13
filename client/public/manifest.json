@@ -1,0 +1,130 @@
+{
+  "name": "한국형 마피아 게임",
+  "short_name": "마피아 게임",
+  "description": "교실용 실시간 멀티플레이어 한국형 마피아 게임",
+  "theme_color": "#4f46e5",
+  "background_color": "#1e1b4b",
+  "display": "standalone",
+  "scope": "/",
+  "start_url": "/",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icons/icon-72x72.svg",
+      "sizes": "72x72",
+      "type": "image/svg+xml",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-96x96.svg",
+      "sizes": "96x96",
+      "type": "image/svg+xml",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-128x128.svg",
+      "sizes": "128x128",
+      "type": "image/svg+xml",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-144x144.svg",
+      "sizes": "144x144",
+      "type": "image/svg+xml",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-152x152.svg",
+      "sizes": "152x152",
+      "type": "image/svg+xml",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-192x192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-384x384.svg",
+      "sizes": "384x384",
+      "type": "image/svg+xml",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-512x512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable any"
+    }
+  ],
+  "categories": [
+    "games",
+    "education",
+    "social"
+  ],
+  "lang": "ko",
+  "dir": "ltr",
+  "prefer_related_applications": false,
+  "shortcuts": [
+    {
+      "name": "새 게임 만들기",
+      "short_name": "새 게임",
+      "description": "새로운 마피아 게임 방을 만듭니다",
+      "url": "/?action=create",
+      "icons": [
+        {
+          "src": "/icons/shortcut-create.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "게임 참여하기",
+      "short_name": "게임 참여",
+      "description": "기존 게임 방에 참여합니다",
+      "url": "/?action=join",
+      "icons": [
+        {
+          "src": "/icons/shortcut-join.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "교사 대시보드",
+      "short_name": "교사 모드",
+      "description": "클래스룸 관리 대시보드를 엽니다",
+      "url": "/?mode=teacher",
+      "icons": [
+        {
+          "src": "/icons/shortcut-teacher.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/mobile-home.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "모바일 홈 화면"
+    },
+    {
+      "src": "/screenshots/mobile-game.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "모바일 게임 화면"
+    },
+    {
+      "src": "/screenshots/desktop-dashboard.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "교사 대시보드"
+    }
+  ]
+}

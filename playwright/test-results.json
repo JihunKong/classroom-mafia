@@ -1,0 +1,984 @@
+{
+  "config": {
+    "configFile": "/Users/jihunkong/mafia game/playwright/playwright.config.ts",
+    "rootDir": "/Users/jihunkong/mafia game/playwright/tests",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 4
+    },
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "html",
+        {
+          "outputFolder": "playwright-report"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results.json"
+        }
+      ],
+      [
+        "list",
+        null
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "/Users/jihunkong/mafia game/playwright/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 4
+        },
+        "id": "Desktop Chrome",
+        "name": "Desktop Chrome",
+        "testDir": "/Users/jihunkong/mafia game/playwright/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 300000
+      },
+      {
+        "outputDir": "/Users/jihunkong/mafia game/playwright/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 4
+        },
+        "id": "Desktop Firefox",
+        "name": "Desktop Firefox",
+        "testDir": "/Users/jihunkong/mafia game/playwright/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 300000
+      },
+      {
+        "outputDir": "/Users/jihunkong/mafia game/playwright/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 4
+        },
+        "id": "Desktop Safari",
+        "name": "Desktop Safari",
+        "testDir": "/Users/jihunkong/mafia game/playwright/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 300000
+      },
+      {
+        "outputDir": "/Users/jihunkong/mafia game/playwright/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 4
+        },
+        "id": "Mobile Chrome",
+        "name": "Mobile Chrome",
+        "testDir": "/Users/jihunkong/mafia game/playwright/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 300000
+      },
+      {
+        "outputDir": "/Users/jihunkong/mafia game/playwright/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 4
+        },
+        "id": "Mobile Safari",
+        "name": "Mobile Safari",
+        "testDir": "/Users/jihunkong/mafia game/playwright/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 300000
+      },
+      {
+        "outputDir": "/Users/jihunkong/mafia game/playwright/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 4
+        },
+        "id": "Load Test Chrome",
+        "name": "Load Test Chrome",
+        "testDir": "/Users/jihunkong/mafia game/playwright/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "/.*load.*\\.spec\\.ts/"
+        ],
+        "timeout": 300000
+      }
+    ],
+    "shard": null,
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.54.1",
+    "workers": 5,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "mafia-20-players.spec.ts",
+      "file": "mafia-20-players.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Korean Mafia Game - 20 Players Maximum Capacity",
+          "file": "mafia-20-players.spec.ts",
+          "line": 7,
+          "column": 6,
+          "specs": [
+            {
+              "title": "should support exactly 20 players joining and playing",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 300000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Desktop Chrome",
+                  "projectName": "Desktop Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 13667,
+                      "error": {
+                        "message": "TimeoutError: locator.textContent: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('text=참여 코드:').locator('+ span')\u001b[22m\n",
+                        "stack": "TimeoutError: locator.textContent: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('text=참여 코드:').locator('+ span')\u001b[22m\n\n    at GameTestHelper.createGameRoom (/Users/jihunkong/mafia game/playwright/tests/helpers/game-helpers.ts:93:44)\n    at /Users/jihunkong/mafia game/playwright/tests/mafia-20-players.spec.ts:45:22",
+                        "location": {
+                          "file": "/Users/jihunkong/mafia game/playwright/tests/helpers/game-helpers.ts",
+                          "column": 44,
+                          "line": 93
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39mhelpers/game-helpers.ts:93\n\n  91 |     await expect(host.page.locator('text=대기실')).toBeVisible();\n  92 |     const roomCodeElement = await host.page.locator('text=참여 코드:').locator('+ span');\n> 93 |     const roomCode = await roomCodeElement.textContent();\n     |                                            ^\n  94 |     \n  95 |     console.log(`  ✅ Room created with code: ${roomCode}`);\n  96 |     return roomCode!;"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/jihunkong/mafia game/playwright/tests/helpers/game-helpers.ts",
+                            "column": 44,
+                            "line": 93
+                          },
+                          "message": "TimeoutError: locator.textContent: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('text=참여 코드:').locator('+ span')\u001b[22m\n\n\n   at helpers/game-helpers.ts:93\n\n  91 |     await expect(host.page.locator('text=대기실')).toBeVisible();\n  92 |     const roomCodeElement = await host.page.locator('text=참여 코드:').locator('+ span');\n> 93 |     const roomCode = await roomCodeElement.textContent();\n     |                                            ^\n  94 |     \n  95 |     console.log(`  ✅ Room created with code: ${roomCode}`);\n  96 |     return roomCode!;\n    at GameTestHelper.createGameRoom (/Users/jihunkong/mafia game/playwright/tests/helpers/game-helpers.ts:93:44)\n    at /Users/jihunkong/mafia game/playwright/tests/mafia-20-players.spec.ts:45:22"
+                        }
+                      ],
+                      "stdout": [
+                        {
+                          "text": "🚀 Starting 20-player maximum capacity test...\n"
+                        },
+                        {
+                          "text": "\n=== 20 PLAYER MAXIMUM CAPACITY TEST ===\n"
+                        },
+                        {
+                          "text": "\n📊 Step 1: Creating 20 players...\n"
+                        },
+                        {
+                          "text": "🎭 Creating 20 players...\n"
+                        },
+                        {
+                          "text": "  ✅ Created player 1: 김민수\n"
+                        },
+                        {
+                          "text": "  ✅ Created player 2: 이영희\n"
+                        },
+                        {
+                          "text": "  ✅ Created player 3: 박철수\n"
+                        },
+                        {
+                          "text": "  ✅ Created player 4: 최유진\n"
+                        },
+                        {
+                          "text": "  ✅ Created player 5: 정다영\n"
+                        },
+                        {
+                          "text": "  ✅ Created player 6: 강호준\n"
+                        },
+                        {
+                          "text": "  ✅ Created player 7: 윤서연\n"
+                        },
+                        {
+                          "text": "  ✅ Created player 8: 임태현\n"
+                        },
+                        {
+                          "text": "  ✅ Created player 9: 한지민\n"
+                        },
+                        {
+                          "text": "  ✅ Created player 10: 조현우\n"
+                        },
+                        {
+                          "text": "  ✅ Created player 11: 신아름\n"
+                        },
+                        {
+                          "text": "  ✅ Created player 12: 홍승기\n"
+                        },
+                        {
+                          "text": "  ✅ Created player 13: 문소영\n"
+                        },
+                        {
+                          "text": "  ✅ Created player 14: 백준혁\n"
+                        },
+                        {
+                          "text": "  ✅ Created player 15: 송미경\n"
+                        },
+                        {
+                          "text": "  ✅ Created player 16: 류정호\n"
+                        },
+                        {
+                          "text": "  ✅ Created player 17: 안혜진\n"
+                        },
+                        {
+                          "text": "  ✅ Created player 18: 장성민\n"
+                        },
+                        {
+                          "text": "  ✅ Created player 19: 오수정\n"
+                        },
+                        {
+                          "text": "  ✅ Created player 20: 권기탁\n"
+                        },
+                        {
+                          "text": "\n🏠 Step 2: Loading home page for all players...\n"
+                        },
+                        {
+                          "text": "🏠 Navigating all players to home page...\n"
+                        },
+                        {
+                          "text": "  ✅ Player 1 (김민수) loaded home page\n"
+                        },
+                        {
+                          "text": "  ✅ Player 4 (최유진) loaded home page\n"
+                        },
+                        {
+                          "text": "  ✅ Player 3 (박철수) loaded home page\n"
+                        },
+                        {
+                          "text": "  ✅ Player 2 (이영희) loaded home page\n"
+                        },
+                        {
+                          "text": "  ✅ Player 13 (문소영) loaded home page\n"
+                        },
+                        {
+                          "text": "  ✅ Player 16 (류정호) loaded home page\n"
+                        },
+                        {
+                          "text": "  ✅ Player 6 (강호준) loaded home page\n"
+                        },
+                        {
+                          "text": "  ✅ Player 14 (백준혁) loaded home page\n"
+                        },
+                        {
+                          "text": "  ✅ Player 12 (홍승기) loaded home page\n"
+                        },
+                        {
+                          "text": "  ✅ Player 7 (윤서연) loaded home page\n"
+                        },
+                        {
+                          "text": "  ✅ Player 15 (송미경) loaded home page\n"
+                        },
+                        {
+                          "text": "  ✅ Player 17 (안혜진) loaded home page\n"
+                        },
+                        {
+                          "text": "  ✅ Player 8 (임태현) loaded home page\n"
+                        },
+                        {
+                          "text": "  ✅ Player 19 (오수정) loaded home page\n"
+                        },
+                        {
+                          "text": "  ✅ Player 11 (신아름) loaded home page\n"
+                        },
+                        {
+                          "text": "  ✅ Player 5 (정다영) loaded home page\n"
+                        },
+                        {
+                          "text": "  ✅ Player 10 (조현우) loaded home page\n"
+                        },
+                        {
+                          "text": "  ✅ Player 9 (한지민) loaded home page\n"
+                        },
+                        {
+                          "text": "  ✅ Player 18 (장성민) loaded home page\n"
+                        },
+                        {
+                          "text": "  ✅ Player 20 (권기탁) loaded home page\n"
+                        },
+                        {
+                          "text": "⏱️  Navigation completed in 2123ms (avg: 106.15ms per player)\n"
+                        },
+                        {
+                          "text": "\n🏗️  Step 3: Creating game room...\n"
+                        },
+                        {
+                          "text": "🏗️  Creating game room with host: 김민수\n"
+                        },
+                        {
+                          "text": "🧹 Cleaning up player contexts...\n"
+                        },
+                        {
+                          "text": "  ✅ All contexts cleaned up\n"
+                        },
+                        {
+                          "text": "🏁 20-player test completed\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-07-13T22:33:09.723Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jihunkong/mafia game/playwright/test-results/mafia-20-players-Korean-Ma-b9f6f-players-joining-and-playing-Desktop-Chrome/test-failed-8.png"
+                        },
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jihunkong/mafia game/playwright/test-results/mafia-20-players-Korean-Ma-b9f6f-players-joining-and-playing-Desktop-Chrome/test-failed-3.png"
+                        },
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jihunkong/mafia game/playwright/test-results/mafia-20-players-Korean-Ma-b9f6f-players-joining-and-playing-Desktop-Chrome/test-failed-1.png"
+                        },
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jihunkong/mafia game/playwright/test-results/mafia-20-players-Korean-Ma-b9f6f-players-joining-and-playing-Desktop-Chrome/test-failed-7.png"
+                        },
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jihunkong/mafia game/playwright/test-results/mafia-20-players-Korean-Ma-b9f6f-players-joining-and-playing-Desktop-Chrome/test-failed-6.png"
+                        },
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jihunkong/mafia game/playwright/test-results/mafia-20-players-Korean-Ma-b9f6f-players-joining-and-playing-Desktop-Chrome/test-failed-10.png"
+                        },
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jihunkong/mafia game/playwright/test-results/mafia-20-players-Korean-Ma-b9f6f-players-joining-and-playing-Desktop-Chrome/test-failed-2.png"
+                        },
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jihunkong/mafia game/playwright/test-results/mafia-20-players-Korean-Ma-b9f6f-players-joining-and-playing-Desktop-Chrome/test-failed-4.png"
+                        },
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jihunkong/mafia game/playwright/test-results/mafia-20-players-Korean-Ma-b9f6f-players-joining-and-playing-Desktop-Chrome/test-failed-9.png"
+                        },
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jihunkong/mafia game/playwright/test-results/mafia-20-players-Korean-Ma-b9f6f-players-joining-and-playing-Desktop-Chrome/test-failed-12.png"
+                        },
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jihunkong/mafia game/playwright/test-results/mafia-20-players-Korean-Ma-b9f6f-players-joining-and-playing-Desktop-Chrome/test-failed-5.png"
+                        },
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jihunkong/mafia game/playwright/test-results/mafia-20-players-Korean-Ma-b9f6f-players-joining-and-playing-Desktop-Chrome/test-failed-13.png"
+                        },
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jihunkong/mafia game/playwright/test-results/mafia-20-players-Korean-Ma-b9f6f-players-joining-and-playing-Desktop-Chrome/test-failed-11.png"
+                        },
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jihunkong/mafia game/playwright/test-results/mafia-20-players-Korean-Ma-b9f6f-players-joining-and-playing-Desktop-Chrome/test-failed-15.png"
+                        },
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jihunkong/mafia game/playwright/test-results/mafia-20-players-Korean-Ma-b9f6f-players-joining-and-playing-Desktop-Chrome/test-failed-17.png"
+                        },
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jihunkong/mafia game/playwright/test-results/mafia-20-players-Korean-Ma-b9f6f-players-joining-and-playing-Desktop-Chrome/test-failed-19.png"
+                        },
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jihunkong/mafia game/playwright/test-results/mafia-20-players-Korean-Ma-b9f6f-players-joining-and-playing-Desktop-Chrome/test-failed-16.png"
+                        },
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jihunkong/mafia game/playwright/test-results/mafia-20-players-Korean-Ma-b9f6f-players-joining-and-playing-Desktop-Chrome/test-failed-18.png"
+                        },
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jihunkong/mafia game/playwright/test-results/mafia-20-players-Korean-Ma-b9f6f-players-joining-and-playing-Desktop-Chrome/test-failed-20.png"
+                        },
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jihunkong/mafia game/playwright/test-results/mafia-20-players-Korean-Ma-b9f6f-players-joining-and-playing-Desktop-Chrome/test-failed-14.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/jihunkong/mafia game/playwright/test-results/mafia-20-players-Korean-Ma-b9f6f-players-joining-and-playing-Desktop-Chrome/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/jihunkong/mafia game/playwright/tests/helpers/game-helpers.ts",
+                        "column": 44,
+                        "line": 93
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "b9215983dd73ea4445b4-f82610c609597ada9a97",
+              "file": "mafia-20-players.spec.ts",
+              "line": 24,
+              "column": 3
+            },
+            {
+              "title": "should handle 20 players with network simulation",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 300000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Desktop Chrome",
+                  "projectName": "Desktop Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "failed",
+                      "duration": 13903,
+                      "error": {
+                        "message": "TimeoutError: page.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:has-text(\"방 만들기\")')\u001b[22m\n\u001b[2m    - locator resolved to <button disabled class=\"w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 disabled:bg-gray-400\">방 만들기 (6-20명)</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    19 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not enabled\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n",
+                        "stack": "TimeoutError: page.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:has-text(\"방 만들기\")')\u001b[22m\n\u001b[2m    - locator resolved to <button disabled class=\"w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 disabled:bg-gray-400\">방 만들기 (6-20명)</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    19 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not enabled\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n    at GameTestHelper.createGameRoom (/Users/jihunkong/mafia game/playwright/tests/helpers/game-helpers.ts:88:21)\n    at /Users/jihunkong/mafia game/playwright/tests/mafia-20-players.spec.ts:190:22",
+                        "location": {
+                          "file": "/Users/jihunkong/mafia game/playwright/tests/helpers/game-helpers.ts",
+                          "column": 21,
+                          "line": 88
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39mhelpers/game-helpers.ts:88\n\n  86 |     \n  87 |     // Create room\n> 88 |     await host.page.click('button:has-text(\"방 만들기\")');\n     |                     ^\n  89 |     \n  90 |     // Wait for room creation and get room code\n  91 |     await expect(host.page.locator('text=대기실')).toBeVisible();"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/jihunkong/mafia game/playwright/tests/helpers/game-helpers.ts",
+                            "column": 21,
+                            "line": 88
+                          },
+                          "message": "TimeoutError: page.click: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:has-text(\"방 만들기\")')\u001b[22m\n\u001b[2m    - locator resolved to <button disabled class=\"w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 disabled:bg-gray-400\">방 만들기 (6-20명)</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    19 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not enabled\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n\n   at helpers/game-helpers.ts:88\n\n  86 |     \n  87 |     // Create room\n> 88 |     await host.page.click('button:has-text(\"방 만들기\")');\n     |                     ^\n  89 |     \n  90 |     // Wait for room creation and get room code\n  91 |     await expect(host.page.locator('text=대기실')).toBeVisible();\n    at GameTestHelper.createGameRoom (/Users/jihunkong/mafia game/playwright/tests/helpers/game-helpers.ts:88:21)\n    at /Users/jihunkong/mafia game/playwright/tests/mafia-20-players.spec.ts:190:22"
+                        }
+                      ],
+                      "stdout": [
+                        {
+                          "text": "🚀 Starting 20-player maximum capacity test...\n"
+                        },
+                        {
+                          "text": "\n=== NETWORK STRESS TEST WITH 20 PLAYERS ===\n"
+                        },
+                        {
+                          "text": "🎭 Creating 5 players...\n"
+                        },
+                        {
+                          "text": "  ✅ Created player 1: 김민수\n"
+                        },
+                        {
+                          "text": "  ✅ Created player 2: 이영희\n"
+                        },
+                        {
+                          "text": "  ✅ Created player 3: 박철수\n"
+                        },
+                        {
+                          "text": "  ✅ Created player 4: 최유진\n"
+                        },
+                        {
+                          "text": "  ✅ Created player 5: 정다영\n"
+                        },
+                        {
+                          "text": "🏠 Navigating all players to home page...\n"
+                        },
+                        {
+                          "text": "  ✅ Player 1 (김민수) loaded home page\n"
+                        },
+                        {
+                          "text": "  ✅ Player 3 (박철수) loaded home page\n"
+                        },
+                        {
+                          "text": "  ✅ Player 2 (이영희) loaded home page\n"
+                        },
+                        {
+                          "text": "  ✅ Player 4 (최유진) loaded home page\n"
+                        },
+                        {
+                          "text": "  ✅ Player 5 (정다영) loaded home page\n"
+                        },
+                        {
+                          "text": "🏗️  Creating game room with host: 김민수\n"
+                        },
+                        {
+                          "text": "🧹 Cleaning up player contexts...\n"
+                        },
+                        {
+                          "text": "  ✅ All contexts cleaned up\n"
+                        },
+                        {
+                          "text": "🏁 20-player test completed\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-07-13T22:33:09.720Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jihunkong/mafia game/playwright/test-results/mafia-20-players-Korean-Ma-b7417-ers-with-network-simulation-Desktop-Chrome/test-failed-5.png"
+                        },
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jihunkong/mafia game/playwright/test-results/mafia-20-players-Korean-Ma-b7417-ers-with-network-simulation-Desktop-Chrome/test-failed-3.png"
+                        },
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jihunkong/mafia game/playwright/test-results/mafia-20-players-Korean-Ma-b7417-ers-with-network-simulation-Desktop-Chrome/test-failed-4.png"
+                        },
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jihunkong/mafia game/playwright/test-results/mafia-20-players-Korean-Ma-b7417-ers-with-network-simulation-Desktop-Chrome/test-failed-2.png"
+                        },
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jihunkong/mafia game/playwright/test-results/mafia-20-players-Korean-Ma-b7417-ers-with-network-simulation-Desktop-Chrome/test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/jihunkong/mafia game/playwright/test-results/mafia-20-players-Korean-Ma-b7417-ers-with-network-simulation-Desktop-Chrome/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/jihunkong/mafia game/playwright/tests/helpers/game-helpers.ts",
+                        "column": 21,
+                        "line": 88
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "b9215983dd73ea4445b4-0820e82346966e88c796",
+              "file": "mafia-20-players.spec.ts",
+              "line": 171,
+              "column": 3
+            },
+            {
+              "title": "should handle concurrent room creation attempts",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 300000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Desktop Chrome",
+                  "projectName": "Desktop Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "failed",
+                      "duration": 11935,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: >= \u001b[32m3\u001b[39m\nReceived:    \u001b[31m0\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: >= \u001b[32m3\u001b[39m\nReceived:    \u001b[31m0\u001b[39m\n    at /Users/jihunkong/mafia game/playwright/tests/mafia-20-players.spec.ts:229:40",
+                        "location": {
+                          "file": "/Users/jihunkong/mafia game/playwright/tests/mafia-20-players.spec.ts",
+                          "column": 40,
+                          "line": 229
+                        },
+                        "snippet": "  227 |     \n  228 |     console.log(`✅ ${successfulCreations.length}/5 concurrent room creations succeeded`);\n> 229 |     expect(successfulCreations.length).toBeGreaterThanOrEqual(3); // At least 3 should succeed\n      |                                        ^\n  230 |     \n  231 |     // Clean up concurrent test players\n  232 |     await gameHelper.cleanup(concurrentPlayers);"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/jihunkong/mafia game/playwright/tests/mafia-20-players.spec.ts",
+                            "column": 40,
+                            "line": 229
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: >= \u001b[32m3\u001b[39m\nReceived:    \u001b[31m0\u001b[39m\n\n  227 |     \n  228 |     console.log(`✅ ${successfulCreations.length}/5 concurrent room creations succeeded`);\n> 229 |     expect(successfulCreations.length).toBeGreaterThanOrEqual(3); // At least 3 should succeed\n      |                                        ^\n  230 |     \n  231 |     // Clean up concurrent test players\n  232 |     await gameHelper.cleanup(concurrentPlayers);\n    at /Users/jihunkong/mafia game/playwright/tests/mafia-20-players.spec.ts:229:40"
+                        }
+                      ],
+                      "stdout": [
+                        {
+                          "text": "🚀 Starting 20-player maximum capacity test...\n"
+                        },
+                        {
+                          "text": "\n=== CONCURRENT ROOM CREATION TEST ===\n"
+                        },
+                        {
+                          "text": "🎭 Creating 5 players...\n"
+                        },
+                        {
+                          "text": "  ✅ Created player 1: 김민수\n"
+                        },
+                        {
+                          "text": "  ✅ Created player 2: 이영희\n"
+                        },
+                        {
+                          "text": "  ✅ Created player 3: 박철수\n"
+                        },
+                        {
+                          "text": "  ✅ Created player 4: 최유진\n"
+                        },
+                        {
+                          "text": "  ✅ Created player 5: 정다영\n"
+                        },
+                        {
+                          "text": "🏠 Navigating all players to home page...\n"
+                        },
+                        {
+                          "text": "  ✅ Player 2 (이영희) loaded home page\n"
+                        },
+                        {
+                          "text": "  ✅ Player 1 (김민수) loaded home page\n"
+                        },
+                        {
+                          "text": "  ✅ Player 3 (박철수) loaded home page\n"
+                        },
+                        {
+                          "text": "  ✅ Player 4 (최유진) loaded home page\n"
+                        },
+                        {
+                          "text": "  ✅ Player 5 (정다영) loaded home page\n"
+                        },
+                        {
+                          "text": "✅ 0/5 concurrent room creations succeeded\n"
+                        },
+                        {
+                          "text": "🧹 Cleaning up player contexts...\n"
+                        },
+                        {
+                          "text": "  ✅ All contexts cleaned up\n"
+                        },
+                        {
+                          "text": "🏁 20-player test completed\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-07-13T22:33:09.719Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jihunkong/mafia game/playwright/test-results/mafia-20-players-Korean-Ma-855c1-rent-room-creation-attempts-Desktop-Chrome/test-failed-4.png"
+                        },
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jihunkong/mafia game/playwright/test-results/mafia-20-players-Korean-Ma-855c1-rent-room-creation-attempts-Desktop-Chrome/test-failed-3.png"
+                        },
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jihunkong/mafia game/playwright/test-results/mafia-20-players-Korean-Ma-855c1-rent-room-creation-attempts-Desktop-Chrome/test-failed-5.png"
+                        },
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jihunkong/mafia game/playwright/test-results/mafia-20-players-Korean-Ma-855c1-rent-room-creation-attempts-Desktop-Chrome/test-failed-2.png"
+                        },
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jihunkong/mafia game/playwright/test-results/mafia-20-players-Korean-Ma-855c1-rent-room-creation-attempts-Desktop-Chrome/test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/jihunkong/mafia game/playwright/test-results/mafia-20-players-Korean-Ma-855c1-rent-room-creation-attempts-Desktop-Chrome/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/jihunkong/mafia game/playwright/tests/mafia-20-players.spec.ts",
+                        "column": 40,
+                        "line": 229
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "b9215983dd73ea4445b4-93f02e145a90e5233884",
+              "file": "mafia-20-players.spec.ts",
+              "line": 201,
+              "column": 3
+            },
+            {
+              "title": "should validate memory usage with 20 players",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 300000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Desktop Chrome",
+                  "projectName": "Desktop Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "failed",
+                      "duration": 12404,
+                      "error": {
+                        "message": "TimeoutError: locator.textContent: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('text=참여 코드:').locator('+ span')\u001b[22m\n",
+                        "stack": "TimeoutError: locator.textContent: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('text=참여 코드:').locator('+ span')\u001b[22m\n\n    at GameTestHelper.createGameRoom (/Users/jihunkong/mafia game/playwright/tests/helpers/game-helpers.ts:93:44)\n    at /Users/jihunkong/mafia game/playwright/tests/mafia-20-players.spec.ts:251:22",
+                        "location": {
+                          "file": "/Users/jihunkong/mafia game/playwright/tests/helpers/game-helpers.ts",
+                          "column": 44,
+                          "line": 93
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39mhelpers/game-helpers.ts:93\n\n  91 |     await expect(host.page.locator('text=대기실')).toBeVisible();\n  92 |     const roomCodeElement = await host.page.locator('text=참여 코드:').locator('+ span');\n> 93 |     const roomCode = await roomCodeElement.textContent();\n     |                                            ^\n  94 |     \n  95 |     console.log(`  ✅ Room created with code: ${roomCode}`);\n  96 |     return roomCode!;"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/jihunkong/mafia game/playwright/tests/helpers/game-helpers.ts",
+                            "column": 44,
+                            "line": 93
+                          },
+                          "message": "TimeoutError: locator.textContent: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('text=참여 코드:').locator('+ span')\u001b[22m\n\n\n   at helpers/game-helpers.ts:93\n\n  91 |     await expect(host.page.locator('text=대기실')).toBeVisible();\n  92 |     const roomCodeElement = await host.page.locator('text=참여 코드:').locator('+ span');\n> 93 |     const roomCode = await roomCodeElement.textContent();\n     |                                            ^\n  94 |     \n  95 |     console.log(`  ✅ Room created with code: ${roomCode}`);\n  96 |     return roomCode!;\n    at GameTestHelper.createGameRoom (/Users/jihunkong/mafia game/playwright/tests/helpers/game-helpers.ts:93:44)\n    at /Users/jihunkong/mafia game/playwright/tests/mafia-20-players.spec.ts:251:22"
+                        }
+                      ],
+                      "stdout": [
+                        {
+                          "text": "🚀 Starting 20-player maximum capacity test...\n"
+                        },
+                        {
+                          "text": "\n=== MEMORY USAGE TEST ===\n"
+                        },
+                        {
+                          "text": "🎭 Creating 10 players...\n"
+                        },
+                        {
+                          "text": "  ✅ Created player 1: 김민수\n"
+                        },
+                        {
+                          "text": "  ✅ Created player 2: 이영희\n"
+                        },
+                        {
+                          "text": "  ✅ Created player 3: 박철수\n"
+                        },
+                        {
+                          "text": "  ✅ Created player 4: 최유진\n"
+                        },
+                        {
+                          "text": "  ✅ Created player 5: 정다영\n"
+                        },
+                        {
+                          "text": "  ✅ Created player 6: 강호준\n"
+                        },
+                        {
+                          "text": "  ✅ Created player 7: 윤서연\n"
+                        },
+                        {
+                          "text": "  ✅ Created player 8: 임태현\n"
+                        },
+                        {
+                          "text": "  ✅ Created player 9: 한지민\n"
+                        },
+                        {
+                          "text": "  ✅ Created player 10: 조현우\n"
+                        },
+                        {
+                          "text": "🏠 Navigating all players to home page...\n"
+                        },
+                        {
+                          "text": "  ✅ Player 1 (김민수) loaded home page\n"
+                        },
+                        {
+                          "text": "  ✅ Player 2 (이영희) loaded home page\n"
+                        },
+                        {
+                          "text": "  ✅ Player 4 (최유진) loaded home page\n"
+                        },
+                        {
+                          "text": "  ✅ Player 3 (박철수) loaded home page\n"
+                        },
+                        {
+                          "text": "  ✅ Player 6 (강호준) loaded home page\n"
+                        },
+                        {
+                          "text": "  ✅ Player 7 (윤서연) loaded home page\n"
+                        },
+                        {
+                          "text": "  ✅ Player 5 (정다영) loaded home page\n"
+                        },
+                        {
+                          "text": "  ✅ Player 10 (조현우) loaded home page\n"
+                        },
+                        {
+                          "text": "  ✅ Player 9 (한지민) loaded home page\n"
+                        },
+                        {
+                          "text": "  ✅ Player 8 (임태현) loaded home page\n"
+                        },
+                        {
+                          "text": "Initial memory: 10MB\n"
+                        },
+                        {
+                          "text": "🏗️  Creating game room with host: 김민수\n"
+                        },
+                        {
+                          "text": "🧹 Cleaning up player contexts...\n"
+                        },
+                        {
+                          "text": "  ✅ All contexts cleaned up\n"
+                        },
+                        {
+                          "text": "🏁 20-player test completed\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-07-13T22:33:09.719Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jihunkong/mafia game/playwright/test-results/mafia-20-players-Korean-Ma-eb6a0-emory-usage-with-20-players-Desktop-Chrome/test-failed-2.png"
+                        },
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jihunkong/mafia game/playwright/test-results/mafia-20-players-Korean-Ma-eb6a0-emory-usage-with-20-players-Desktop-Chrome/test-failed-1.png"
+                        },
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jihunkong/mafia game/playwright/test-results/mafia-20-players-Korean-Ma-eb6a0-emory-usage-with-20-players-Desktop-Chrome/test-failed-5.png"
+                        },
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jihunkong/mafia game/playwright/test-results/mafia-20-players-Korean-Ma-eb6a0-emory-usage-with-20-players-Desktop-Chrome/test-failed-3.png"
+                        },
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jihunkong/mafia game/playwright/test-results/mafia-20-players-Korean-Ma-eb6a0-emory-usage-with-20-players-Desktop-Chrome/test-failed-4.png"
+                        },
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jihunkong/mafia game/playwright/test-results/mafia-20-players-Korean-Ma-eb6a0-emory-usage-with-20-players-Desktop-Chrome/test-failed-10.png"
+                        },
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jihunkong/mafia game/playwright/test-results/mafia-20-players-Korean-Ma-eb6a0-emory-usage-with-20-players-Desktop-Chrome/test-failed-7.png"
+                        },
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jihunkong/mafia game/playwright/test-results/mafia-20-players-Korean-Ma-eb6a0-emory-usage-with-20-players-Desktop-Chrome/test-failed-9.png"
+                        },
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jihunkong/mafia game/playwright/test-results/mafia-20-players-Korean-Ma-eb6a0-emory-usage-with-20-players-Desktop-Chrome/test-failed-8.png"
+                        },
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/jihunkong/mafia game/playwright/test-results/mafia-20-players-Korean-Ma-eb6a0-emory-usage-with-20-players-Desktop-Chrome/test-failed-6.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/jihunkong/mafia game/playwright/test-results/mafia-20-players-Korean-Ma-eb6a0-emory-usage-with-20-players-Desktop-Chrome/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/jihunkong/mafia game/playwright/tests/helpers/game-helpers.ts",
+                        "column": 44,
+                        "line": 93
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "b9215983dd73ea4445b4-bb1b2197ee473e2146ac",
+              "file": "mafia-20-players.spec.ts",
+              "line": 235,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2025-07-13T22:33:09.316Z",
+    "duration": 14617.905,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 4,
+    "flaky": 0
+  }
+}
