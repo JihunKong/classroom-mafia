@@ -2,8 +2,8 @@
 
 import { Server, Socket } from 'socket.io';
 import { v4 as uuidv4 } from 'uuid';
-import { DeadChatMessage } from '../../../shared/types';
-// import { sanitizePlayerName } from '../../../shared/constants/security';
+import { DeadChatMessage } from '../shared/types';
+// import { sanitizePlayerName } from '../shared/constants/security';
 
 // 방별 데드챗 메시지 저장
 const deadChatMessages: Map<string, DeadChatMessage[]> = new Map();

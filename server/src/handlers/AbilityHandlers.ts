@@ -3,8 +3,8 @@
 import { Server } from 'socket.io';
 import { roleService, AbilityResult } from '../services/RoleService';
 import { EnhancedRoom, EnhancedPlayer, GameStateManager, DelayedEffect } from '../types/GameState';
-import { GameAction } from '../../../shared/types/game';
-import { ROLES } from '../../../shared/constants/roles';
+import { GameAction } from '../shared/types/game';
+import { ROLES } from '../shared/constants/roles';
 
 export class AbilityHandlers {
   private io: Server;

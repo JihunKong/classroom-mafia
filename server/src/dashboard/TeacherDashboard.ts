@@ -2,7 +2,7 @@
 
 import { Server } from 'socket.io';
 import { EnhancedRoom, EnhancedPlayer, GameStateManager } from '../types/GameState';
-import { ROLES } from '../../../shared/constants/roles';
+import { ROLES } from '../shared/constants/roles';
 import { roleService } from '../services/RoleService';
 
 export interface ClassroomSession {

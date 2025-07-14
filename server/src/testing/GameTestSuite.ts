@@ -3,9 +3,9 @@
 import { EnhancedRoom, EnhancedPlayer, GameStateManager } from '../types/GameState';
 import { roleService } from '../services/RoleService';
 import { AbilityHandlers } from '../handlers/AbilityHandlers';
-import { ROLES, createRoleArray } from '../../../shared/constants/roles';
+import { ROLES, createRoleArray } from '../shared/constants/roles';
 import { ErrorHandler, ErrorType } from '../utils/ErrorHandler';
-import { Player } from '../../../shared/types/game';
+import { Player } from '../shared/types/game';
 import { Server } from 'socket.io';
 
 export interface TestResult {

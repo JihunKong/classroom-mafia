@@ -1,7 +1,7 @@
 // server/src/utils/GameValidator.ts
 
 import { EnhancedRoom, EnhancedPlayer } from '../types/GameState';
-import { ROLES } from '../../../shared/constants/roles';
+import { ROLES } from '../shared/constants/roles';
 import { ErrorHandler, ErrorType, GameError } from './ErrorHandler';
 
 export interface ValidationResult {

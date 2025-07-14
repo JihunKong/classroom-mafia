@@ -1,11 +1,11 @@
 // server/src/types/GameState.ts
 
-import { GamePhase } from '../../../shared/constants/phases';
-import { Player } from '../../../shared/types/game';
+import { GamePhase } from '../shared/constants/phases';
+import { Player } from '../shared/types/game';
 import { AbilityState } from '../services/RoleService';
 
 // Re-export Player properties to ensure TypeScript recognizes them
-export type { Player } from '../../../shared/types/game';
+export type { Player } from '../shared/types/game';
 
 export interface EnhancedPlayer extends Player {
   // Explicitly include base Player properties

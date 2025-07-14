@@ -1,0 +1,23 @@
+[phases.setup]
+nixPkgs = ['nodejs_18', 'npm']
+
+[phases.install]
+cmds = [
+  'npm ci',
+  'cd client && npm ci',
+  'cd server && npm ci'
+]
+
+[phases.build]
+cmds = [
+  'cd server && npm run build',
+  'cd client && npm run build',
+  'ls -la server/dist/',
+  'echo "=== Verifying server build ==="',
+  'file server/dist/index.js || echo "index.js not found"',
+  'echo "=== Server dist contents ==="',
+  'find server/dist -name "*.js" | head -10'
+]
+
+[start]
+cmd = 'cd server && node dist/index.js'

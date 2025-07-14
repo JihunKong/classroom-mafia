@@ -1,0 +1,22 @@
+# Railway 배포 명령어 (터미널에서 복사 붙여넣기)
+
+# 1. 새 프로젝트 생성
+railway init
+
+# 2. 환경변수 설정 (한 번에)
+railway variables set PORT=3001 NODE_ENV=production CLIENT_URL=https://classroom-mafia-production.up.railway.app VITE_SERVER_URL=https://classroom-mafia-production.up.railway.app VITE_SOCKET_URL=https://classroom-mafia-production.up.railway.app CORS_ORIGIN=https://classroom-mafia-production.up.railway.app
+
+# 3. 배포
+railway up
+
+# 4. 로그 확인
+railway logs --follow
+
+# 5. 앱 열기
+railway open
+
+# 추가 명령어들:
+# railway status          # 상태 확인
+# railway variables       # 환경변수 목록
+# railway redeploy        # 재배포
+# railway domain          # 도메인 확인

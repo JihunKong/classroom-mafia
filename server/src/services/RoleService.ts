@@ -1,7 +1,7 @@
 // server/src/services/RoleService.ts
 
-import { ROLES, Role } from '../../../shared/constants/roles';
-import { Player, GameAction, Room } from '../../../shared/types/game';
+import { ROLES, Role } from '../shared/constants/roles';
+import { Player, GameAction, Room } from '../shared/types/game';
 import { EnhancedRoom } from '../types/GameState';
 
 export interface AbilityState {
