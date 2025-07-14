@@ -1,7 +1,7 @@
 // client/src/hooks/useSocket.ts
 
 import { useContext, createContext, useEffect, useState, ReactNode } from 'react';
-import io, { Socket } from 'socket.io-client';
+import { io, Socket } from 'socket.io-client';
 import { ServerToClientEvents, SocketEvents } from '../../../shared/types';
 
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:3001';
@@ -25,17 +25,25 @@ export function SocketProvider({ children }: SocketProviderProps) {
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
+    console.log('Creating socket connection to:', SOCKET_URL);
+    
     const newSocket = io(SOCKET_URL, {
       transports: ['websocket', 'polling'],
       timeout: 60000,
     });
 
-    (newSocket as any).on('connect', () => {
+    // Validate socket was created properly
+    if (!newSocket || typeof newSocket.on !== 'function') {
+      console.error('Socket creation failed - invalid socket object');
+      return;
+    }
+
+    newSocket.on('connect', () => {
       setIsConnected(true);
       console.log('Connected to server');
     });
 
-    (newSocket as any).on('disconnect', () => {
+    newSocket.on('disconnect', () => {
       setIsConnected(false);
       console.log('Disconnected from server');
     });

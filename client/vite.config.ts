@@ -10,13 +10,16 @@ export default defineConfig({
       usePolling: true
     }
   },
+  optimizeDeps: {
+    include: ['socket.io-client']
+  },
   build: {
     outDir: 'dist',
     sourcemap: false,
     rollupOptions: {
       output: {
         manualChunks: {
-          vendor: ['react', 'react-dom', 'socket.io-client']
+          vendor: ['react', 'react-dom']
         }
       }
     }
