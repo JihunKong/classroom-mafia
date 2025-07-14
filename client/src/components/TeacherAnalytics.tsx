@@ -51,31 +51,31 @@ export const TeacherAnalytics: React.FC<TeacherAnalyticsProps> = ({
     if (!socket || !currentSession) return
 
     // Listen for analytics data
-    socket.on('analytics:overview', (data: any) => {
+    ;(socket as any).on('analytics:overview', (data: any) => {
       setAnalyticsData(prev => ({ ...prev, overview: data }))
       setIsLoading(false)
     })
 
-    socket.on('analytics:engagement', (data: any) => {
+    ;(socket as any).on('analytics:engagement', (data: any) => {
       setAnalyticsData(prev => ({ ...prev, engagement: data }))
       setIsLoading(false)
     })
 
-    socket.on('analytics:outcomes', (data: any) => {
+    ;(socket as any).on('analytics:outcomes', (data: any) => {
       setAnalyticsData(prev => ({ ...prev, outcomes: data }))
       setIsLoading(false)
     })
 
-    socket.on('analytics:behavior', (data: any) => {
+    ;(socket as any).on('analytics:behavior', (data: any) => {
       setAnalyticsData(prev => ({ ...prev, behavior: data }))
       setIsLoading(false)
     })
 
     return () => {
-      socket.off('analytics:overview')
-      socket.off('analytics:engagement')
-      socket.off('analytics:outcomes')
-      socket.off('analytics:behavior')
+      ;(socket as any).off('analytics:overview')
+      ;(socket as any).off('analytics:engagement')
+      ;(socket as any).off('analytics:outcomes')
+      ;(socket as any).off('analytics:behavior')
     }
   }, [socket, currentSession])
 

@@ -43,72 +43,72 @@ export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({
     if (!socket) return
 
     // Teacher socket connection events
-    socket.on('connect', () => {
+    ;(socket as any).on('connect', () => {
       setIsConnected(true)
       console.log('Teacher socket connected')
     })
 
-    socket.on('disconnect', () => {
+    ;(socket as any).on('disconnect', () => {
       setIsConnected(false)
       console.log('Teacher socket disconnected')
     })
 
-    socket.on('classroom:created', (data: any) => {
+    ;(socket as any).on('classroom:created', (data: any) => {
       setCurrentSession(data.session)
       addNotification(`클래스룸 '${data.session.className}'이 생성되었습니다.`)
     })
 
-    socket.on('classroom:joined', (data: any) => {
+    ;(socket as any).on('classroom:joined', (data: any) => {
       setCurrentSession(data.session)
       setRooms(data.currentRooms)
       addNotification(`클래스룸 '${data.session.className}'에 참여했습니다.`)
     })
 
-    socket.on('room:created', (data: any) => {
+    ;(socket as any).on('room:created', (data: any) => {
       addNotification(`새 게임룸 '${data.roomName}' (${data.roomCode})이 생성되었습니다.`)
       // Refresh room list
       refreshRooms()
     })
 
-    socket.on('classroom:roomAdded', (data: any) => {
+    ;(socket as any).on('classroom:roomAdded', (data: any) => {
       setRooms(prev => [...prev, data.room])
     })
 
-    socket.on('room:controlSuccess', (data: any) => {
+    ;(socket as any).on('room:controlSuccess', (data: any) => {
       addNotification(`제어 명령 '${data.action}'이 실행되었습니다.`)
     })
 
-    socket.on('moderation:success', (data: any) => {
+    ;(socket as any).on('moderation:success', (data: any) => {
       addNotification(`${data.studentName}에게 '${data.action}' 조치를 실행했습니다.`)
     })
 
-    socket.on('settings:updated', (data: any) => {
+    ;(socket as any).on('settings:updated', (data: any) => {
       addNotification('클래스룸 설정이 업데이트되었습니다.')
       if (currentSession) {
         setCurrentSession(prev => prev ? { ...prev, settings: data.settings } : null)
       }
     })
 
-    socket.on('analytics:overview', (/* data: any */) => {
+    ;(socket as any).on('analytics:overview', (/* data: any */) => {
       // Handle analytics data
     })
 
-    socket.on('error', (data: any) => {
+    ;(socket as any).on('error', (data: any) => {
       addNotification(`오류: ${data.message}`)
     })
 
     return () => {
-      socket.off('connect')
-      socket.off('disconnect')
-      socket.off('classroom:created')
-      socket.off('classroom:joined')
-      socket.off('room:created')
-      socket.off('classroom:roomAdded')
-      socket.off('room:controlSuccess')
-      socket.off('moderation:success')
-      socket.off('settings:updated')
-      socket.off('analytics:overview')
-      socket.off('error')
+      ;(socket as any).off('connect')
+      ;(socket as any).off('disconnect')
+      ;(socket as any).off('classroom:created')
+      ;(socket as any).off('classroom:joined')
+      ;(socket as any).off('room:created')
+      ;(socket as any).off('classroom:roomAdded')
+      ;(socket as any).off('room:controlSuccess')
+      ;(socket as any).off('moderation:success')
+      ;(socket as any).off('settings:updated')
+      ;(socket as any).off('analytics:overview')
+      ;(socket as any).off('error')
     }
   }, [socket, currentSession])
 

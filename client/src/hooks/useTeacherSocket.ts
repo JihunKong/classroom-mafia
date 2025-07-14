@@ -46,7 +46,7 @@ export const useTeacherSocket = () => {
 
     socketRef.current = socket
 
-    socket.on('connect', () => {
+    ;(socket as any).on('connect', () => {
       console.log('Teacher socket connected')
       setState(prev => ({ 
         ...prev, 
@@ -56,7 +56,7 @@ export const useTeacherSocket = () => {
       }))
     })
 
-    socket.on('disconnect', (reason) => {
+    ;(socket as any).on('disconnect', (reason: string) => {
       console.log('Teacher socket disconnected:', reason)
       setState(prev => ({ 
         ...prev, 
@@ -74,7 +74,7 @@ export const useTeacherSocket = () => {
       }
     })
 
-    socket.on('teacher:authenticated', (data) => {
+    ;(socket as any).on('teacher:authenticated', (data: any) => {
       console.log('Teacher authenticated:', data)
       setState(prev => ({ 
         ...prev, 
@@ -88,7 +88,7 @@ export const useTeacherSocket = () => {
       }))
     })
 
-    socket.on('teacher:authFailed', (data) => {
+    ;(socket as any).on('teacher:authFailed', (data: any) => {
       console.log('Teacher authentication failed:', data)
       setState(prev => ({ 
         ...prev, 
@@ -98,7 +98,7 @@ export const useTeacherSocket = () => {
       }))
     })
 
-    socket.on('connect_error', (error) => {
+    ;(socket as any).on('connect_error', (error: any) => {
       console.error('Teacher socket connection error:', error)
       setState(prev => ({ 
         ...prev, 
@@ -106,7 +106,7 @@ export const useTeacherSocket = () => {
       }))
     })
 
-    socket.on('error', (data) => {
+    ;(socket as any).on('error', (data: any) => {
       console.error('Teacher socket error:', data)
       setState(prev => ({ 
         ...prev, 

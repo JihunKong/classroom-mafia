@@ -60,10 +60,10 @@ export const TeacherSettings: React.FC<TeacherSettingsProps> = ({
     const handleSuccess = () => {
       setHasChanges(false)
       setIsSaving(false)
-      socket.off('settings:updated', handleSuccess)
+      ;(socket as any).off('settings:updated', handleSuccess)
     }
 
-    socket.on('settings:updated', handleSuccess)
+    ;(socket as any).on('settings:updated', handleSuccess)
   }
 
   const resetSettings = () => {

@@ -34,7 +34,7 @@ export const DeadChat: React.FC = () => {
 
     (socket as any).on('deadChat:activated', () => {
       // 사망 시 데드챗 히스토리 요청
-      socket.emit('deadChat:getHistory');
+      ;(socket as any).emit('deadChat:getHistory');
     });
 
     return () => {
@@ -62,7 +62,7 @@ export const DeadChat: React.FC = () => {
   const sendMessage = () => {
     if (!inputMessage.trim() || !socket || !myPlayer) return;
 
-    socket.emit('deadChat:send', {
+    ;(socket as any).emit('deadChat:send', {
       message: inputMessage.trim()
     });
 
