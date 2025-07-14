@@ -25,15 +25,6 @@ export default defineConfig({
     }
   },
   define: {
-    'import.meta.env.VITE_SERVER_URL': JSON.stringify(
-      process.env.NODE_ENV === 'production' 
-        ? 'https://classroom-mafia-production.up.railway.app'
-        : process.env.VITE_SERVER_URL || 'http://localhost:3001'
-    ),
-    'import.meta.env.VITE_SOCKET_URL': JSON.stringify(
-      process.env.NODE_ENV === 'production' 
-        ? 'https://classroom-mafia-production.up.railway.app'
-        : process.env.VITE_SOCKET_URL || 'http://localhost:3001'
-    )
+    // Don't override these in define - let them be read from actual env vars
   }
 })
