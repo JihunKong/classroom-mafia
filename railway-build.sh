@@ -34,3 +34,16 @@ echo "🎉 Build completed successfully!"
 echo "📊 Final verification:"
 echo "  Server: $(ls -lh server/dist/index.js)"
 echo "  Client: $(du -sh client/dist/)"
+
+# Additional verification for Railway
+echo ""
+echo "📁 Directory structure verification:"
+echo "  Current directory: $(pwd)"
+echo "  Server dist contents:"
+ls -la server/dist/ | head -5
+echo "  Client dist contents:"
+ls -la client/dist/ | head -5
+echo ""
+echo "🔍 Testing file paths:"
+echo "  index.html exists: $(test -f client/dist/index.html && echo 'YES ✅' || echo 'NO ❌')"
+echo "  Server can reach client: $(test -f ../client/dist/index.html && echo 'YES ✅' || echo 'NO ❌')"

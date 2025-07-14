@@ -2,6 +2,7 @@ import express from 'express'
 import { createServer } from 'http'
 import { Server } from 'socket.io'
 import cors from 'cors'
+import path from 'path'
 import { handleDeadChatEvents, notifyPlayerDeath } from './socket/deadChatHandlers'
 import { generateSecureRoomCode, sanitizePlayerName, RATE_LIMITS, SECURITY_CONFIG } from './shared/constants/security'
 import { roleService } from './services/RoleService'
@@ -36,11 +37,23 @@ const PORT = process.env.PORT || 3001
 app.use(cors())
 app.use(express.json())
 
+// Determine client build path based on environment
+const clientBuildPath = process.env.CLIENT_BUILD_PATH || 
+  (process.env.NODE_ENV === 'production' 
+    ? path.join(__dirname, '../../client/dist')  // Railway: /app/server/dist -> /app/client/dist
+    : path.join(__dirname, '../../../client/dist') // Local development
+  );
+
+console.log(`🌐 Static files path: ${clientBuildPath}`);
+console.log(`📁 Current directory: ${__dirname}`);
+
 // Landing page route - redirect to client
 app.get('/', (req, res) => {
   // For Railway deployment, serve the client from the server
   if (process.env.NODE_ENV === 'production') {
-    res.sendFile('index.html', { root: '../client/dist' })
+    const indexPath = path.join(clientBuildPath, 'index.html');
+    console.log(`📄 Serving index.html from: ${indexPath}`);
+    res.sendFile(indexPath);
   } else {
     // In development, redirect to Vite dev server
     res.redirect('http://localhost:5173')
@@ -49,15 +62,25 @@ app.get('/', (req, res) => {
 
 // Serve static files from client build in production
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static('../client/dist'))
+  console.log(`📦 Serving static files from: ${clientBuildPath}`);
+  app.use(express.static(clientBuildPath, {
+    maxAge: '1d',
+    setHeaders: (res, filePath) => {
+      if (filePath.endsWith('.html')) {
+        res.setHeader('Cache-Control', 'no-cache');
+      }
+    }
+  }));
   
   // Catch-all handler for client-side routing
   app.get('*', (req, res) => {
     // Skip API routes
-    if (req.path.startsWith('/api') || req.path.startsWith('/admin') || req.path.startsWith('/health')) {
+    if (req.path.startsWith('/api') || req.path.startsWith('/admin') || req.path.startsWith('/health') || req.path.startsWith('/socket.io')) {
       return res.status(404).json({ error: 'API endpoint not found' })
     }
-    res.sendFile('index.html', { root: '../client/dist' })
+    const indexPath = path.join(clientBuildPath, 'index.html');
+    console.log(`🔄 Catch-all route serving: ${indexPath} for path: ${req.path}`);
+    res.sendFile(indexPath);
   })
 }
 
