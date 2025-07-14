@@ -1,5 +1,31 @@
 import React from 'react'
 
+// Import role images using Vite static imports for reliable paths
+import mafiaImage from '../assets/images/roles/mafia-team/mafia.png'
+import spyImage from '../assets/images/roles/mafia-team/spy.png'
+import werewolfImage from '../assets/images/roles/mafia-team/werewolf.png'
+import doubleAgentImage from '../assets/images/roles/mafia-team/double_agent.png'
+
+import citizenImage from '../assets/images/roles/citizen-team/citizen.png'
+import policeImage from '../assets/images/roles/citizen-team/police.png'
+import doctorImage from '../assets/images/roles/citizen-team/doctor.png'
+import soldierImage from '../assets/images/roles/citizen-team/soldier.png'
+import reporterImage from '../assets/images/roles/citizen-team/reporter.png'
+import detectiveImage from '../assets/images/roles/citizen-team/detective.png'
+import bartenderImage from '../assets/images/roles/citizen-team/bartender.png'
+import mediumImage from '../assets/images/roles/citizen-team/medium.png'
+import wizardImage from '../assets/images/roles/citizen-team/wizard.png'
+import thiefImage from '../assets/images/roles/citizen-team/thief.png'
+import cheerleaderImage from '../assets/images/roles/citizen-team/cheerleader.png'
+
+import turncoatImage from '../assets/images/roles/neutral-team/turncoat.png'
+import terroristImage from '../assets/images/roles/neutral-team/terrorist.png'
+import ghostImage from '../assets/images/roles/neutral-team/ghost.png'
+import illusionistImage from '../assets/images/roles/neutral-team/illusionist.png'
+
+// Default role image from public directory
+const defaultRoleImage = '/assets/images/roles/ui/default_role.png'
+
 interface RoleCardProps {
   role: string
   playerName?: string
@@ -7,32 +33,32 @@ interface RoleCardProps {
   size?: 'small' | 'medium' | 'large'
 }
 
-// Role image mapping
+// Role image mapping using imported images
 const roleImagePaths: Record<string, string> = {
   // Mafia Team
-  mafia: '/assets/images/roles/mafia-team/mafia.png',
-  spy: '/assets/images/roles/mafia-team/spy.png',
-  werewolf: '/assets/images/roles/mafia-team/werewolf.png',
-  doubleAgent: '/assets/images/roles/mafia-team/double_agent.png',
+  mafia: mafiaImage,
+  spy: spyImage,
+  werewolf: werewolfImage,
+  doubleAgent: doubleAgentImage,
   
   // Citizen Team
-  citizen: '/assets/images/roles/citizen-team/citizen.png',
-  police: '/assets/images/roles/citizen-team/police.png',
-  doctor: '/assets/images/roles/citizen-team/doctor.png',
-  soldier: '/assets/images/roles/citizen-team/soldier.png',
-  reporter: '/assets/images/roles/citizen-team/reporter.png',
-  detective: '/assets/images/roles/citizen-team/detective.png',
-  bartender: '/assets/images/roles/citizen-team/bartender.png',
-  medium: '/assets/images/roles/citizen-team/medium.png',
-  wizard: '/assets/images/roles/citizen-team/wizard.png',
-  thief: '/assets/images/roles/citizen-team/thief.png',
-  cheerleader: '/assets/images/roles/citizen-team/cheerleader.png',
+  citizen: citizenImage,
+  police: policeImage,
+  doctor: doctorImage,
+  soldier: soldierImage,
+  reporter: reporterImage,
+  detective: detectiveImage,
+  bartender: bartenderImage,
+  medium: mediumImage,
+  wizard: wizardImage,
+  thief: thiefImage,
+  cheerleader: cheerleaderImage,
   
   // Neutral Team
-  turncoat: '/assets/images/roles/neutral-team/turncoat.png',
-  terrorist: '/assets/images/roles/neutral-team/terrorist.png',
-  ghost: '/assets/images/roles/neutral-team/ghost.png',
-  illusionist: '/assets/images/roles/neutral-team/illusionist.png'
+  turncoat: turncoatImage,
+  terrorist: terroristImage,
+  ghost: ghostImage,
+  illusionist: illusionistImage
 }
 
 // Role names in Korean
@@ -97,7 +123,7 @@ const RoleCard: React.FC<RoleCardProps> = ({
   isRevealed = false,
   size = 'medium' 
 }) => {
-  const imagePath = roleImagePaths[role] || '/assets/images/roles/ui/default_role.png'
+  const imagePath = roleImagePaths[role] || defaultRoleImage
   const roleName = roleNames[role] || role
   const teamColor = roleTeamColors[role] || 'bg-gray-600'
   
@@ -123,7 +149,7 @@ const RoleCard: React.FC<RoleCardProps> = ({
               alt={roleName}
               className="w-full h-full object-cover"
               onError={(e) => {
-                e.currentTarget.src = '/assets/images/roles/ui/default_role.png'
+                e.currentTarget.src = defaultRoleImage
               }}
             />
             <div className={`absolute top-1 right-1 ${teamColor} text-white px-1 py-0.5 rounded text-xs font-bold`}>

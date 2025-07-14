@@ -399,7 +399,7 @@ io.on('connection', (socket) => {
   })
   
   // Initialize dead chat handlers
-  handleDeadChatEvents(io, socket)
+  handleDeadChatEvents(io, socket, players)
   
   socket.on('room:create', ({ playerName, maxPlayers }) => {
     try {
@@ -714,7 +714,7 @@ io.on('connection', (socket) => {
   socket.on('vote:cast', ({ roomCode, targetPlayerId }) => {
     try {
       const room = rooms.get(roomCode)
-      if (!room || room.phase !== 'voting') {
+      if (!room || (room.phase !== 'voting' && room.phase !== 'day')) {
         socket.emit('error', { message: '현재 투표할 수 없습니다.' })
         return
       }
@@ -739,6 +739,9 @@ io.on('connection', (socket) => {
       })
 
       console.log(`${player.name} voted for ${targetPlayer?.name || 'Unknown'} in room ${roomCode}`)
+      
+      // 모든 플레이어가 투표했는지 확인
+      checkAllPlayersVoted(roomCode)
     } catch (error) {
       console.error('Error casting vote:', error)
       socket.emit('error', { message: '투표 중 오류가 발생했습니다.' })
@@ -956,6 +959,38 @@ function checkAllPlayersActed(roomCode: string) {
   }
 }
 
+// 모든 플레이어가 투표했는지 확인
+function checkAllPlayersVoted(roomCode: string) {
+  const room = rooms.get(roomCode)
+  if (!room || (room.phase !== 'day' && room.phase !== 'voting')) return
+  
+  const alivePlayers = room.players.filter(p => p.isAlive)
+  const votedPlayers = room.votes.size
+  
+  console.log(`Room ${roomCode} - Votes completed: ${votedPlayers}/${alivePlayers.length}`)
+  console.log(`Voted players:`, Array.from(room.votes.keys()))
+  console.log(`Alive players:`, alivePlayers.map(p => ({ id: p.id, name: p.name })))
+  
+  // 투표 진행률 알림
+  io.to(roomCode).emit('voting:progress', {
+    voted: votedPlayers,
+    total: alivePlayers.length,
+    message: `투표 진행률: ${votedPlayers}/${alivePlayers.length}명`
+  })
+  
+  // 모든 살아있는 플레이어가 투표했으면 즉시 처리
+  if (votedPlayers >= alivePlayers.length) {
+    console.log(`All players voted in room ${roomCode}, processing voting results...`)
+    clearTimeout(room.phaseTimer)
+    
+    // day 페이즈에서 투표 완료 시 즉시 결과 처리
+    if (room.phase === 'day') {
+      room.phase = 'voting' // 잠시 voting 상태로 변경
+    }
+    processVotingResults(roomCode)
+  }
+}
+
 // 게임 페이즈 관리 함수들
 function startNightPhase(roomCode: string) {
   const room = rooms.get(roomCode)
@@ -1035,18 +1070,20 @@ async function startDayPhase(roomCode: string) {
     console.error(`Error processing day actions for room ${roomCode}:`, error)
   }
   
-  // 낮 페이즈 시작 알림
+  // 낮 페이즈 시작 알림 (토론과 투표 동시 진행)
   io.to(roomCode).emit('phase:day', {
     phase: 'day',
     day: room.day,
-    timeRemaining: 180000, // 3분
-    message: `${room.day}일차 낮이 되었습니다. 토론을 시작하세요.`,
-    alivePlayers: room.players.filter(p => p.isAlive)
+    timeRemaining: 180000, // 3분 (최대 시간)
+    message: `${room.day}일차 낮이 되었습니다. 토론하고 투표하세요.`,
+    alivePlayers: room.players.filter(p => p.isAlive),
+    canVote: true // 낮 페이즈에서 투표 가능
   })
   
-  // 3분 타이머 설정 (토론 시간)
+  // 3분 타이머 설정 (최대 대기 시간)
   room.phaseTimer = setTimeout(() => {
-    startVotingPhase(roomCode)
+    // 시간이 다 되면 바로 투표 결과 처리 (별도 투표 페이즈 없이)
+    processVotingResults(roomCode)
   }, 180000)
 }
 
@@ -1167,7 +1204,7 @@ function processNightActions(roomCode: string) {
       room.gameLog.push(`${targetPlayer.name}이(가) 밤에 사망했습니다.`)
       
       // Notify dead chat system
-      notifyPlayerDeath(io, roomCode, targetPlayer)
+      notifyPlayerDeath(io, roomCode, targetPlayer, players)
     }
   }
   
@@ -1309,7 +1346,7 @@ function processVotingResultsFallback(roomCode: string) {
       room.gameLog.push(resultMessage)
       
       // Notify dead chat system
-      notifyPlayerDeath(io, roomCode, player)
+      notifyPlayerDeath(io, roomCode, player, players)
     }
   } else {
     resultMessage = '투표 결과 아무도 추방되지 않았습니다.'

@@ -8,18 +8,19 @@ import { DeadChatMessage } from '../shared/types';
 // 방별 데드챗 메시지 저장
 const deadChatMessages: Map<string, DeadChatMessage[]> = new Map();
 
-export const handleDeadChatEvents = (io: Server, socket: Socket) => {
+export const handleDeadChatEvents = (io: Server, socket: Socket, players: Map<string, { roomCode: string; player: any }>) => {
   
   // 데드챗 메시지 전송
   socket.on('deadChat:send', async (data: { message: string }) => {
     try {
-      const roomCode = (socket as any).roomCode;
-      const player = (socket as any).player;
+      const playerData = players.get(socket.id);
       
-      if (!roomCode || !player) {
+      if (!playerData) {
         socket.emit('error', { message: '방 정보를 찾을 수 없습니다.' });
         return;
       }
+      
+      const { roomCode, player } = playerData;
 
       // 살아있는 플레이어는 데드챗 사용 불가
       if (player.isAlive) {
@@ -76,32 +77,35 @@ export const handleDeadChatEvents = (io: Server, socket: Socket) => {
 
   // 데드챗 히스토리 요청
   socket.on('deadChat:getHistory', () => {
-    const roomCode = (socket as any).roomCode;
-    const player = (socket as any).player;
-
-    if (!roomCode || !player || player.isAlive) {
+    const playerData = players.get(socket.id);
+    
+    if (!playerData || playerData.player.isAlive) {
       return;
     }
 
+    const { roomCode } = playerData;
     const messages = deadChatMessages.get(roomCode) || [];
     socket.emit('deadChat:history', messages);
   });
 
   // 플레이어 사망 시 데드챗 참여 알림
   socket.on('player:died', (playerId: string) => {
-    const roomCode = (socket as any).roomCode;
-    if (!roomCode) return;
+    const playerData = players.get(socket.id);
+    if (!playerData) return;
+    
+    const { roomCode, player } = playerData;
 
     // 방의 모든 죽은 플레이어에게 새로운 참여자 알림
     const room = io.sockets.adapter.rooms.get(roomCode);
     if (room) {
       for (const socketId of room) {
         const targetSocket = io.sockets.sockets.get(socketId);
-        if (targetSocket && !(targetSocket as any).player.isAlive) {
+        const targetPlayerData = players.get(socketId);
+        if (targetSocket && targetPlayerData && !targetPlayerData.player.isAlive) {
           targetSocket.emit('deadChat:playerJoined', {
             playerId,
-            playerName: (socket as any).player.name,
-            role: (socket as any).player.role
+            playerName: player.name,
+            role: player.role
           });
         }
       }
@@ -113,7 +117,7 @@ export const handleDeadChatEvents = (io: Server, socket: Socket) => {
       roomCode,
       playerId: 'system',
       playerName: '시스템',
-      message: `${(socket as any).player.name}님이 사망하여 데드챗에 참여했습니다.`,
+      message: `${player.name}님이 사망하여 데드챗에 참여했습니다.`,
       timestamp: new Date(),
       role: { id: 'system', name: '시스템', team: 'neutral' }
     };
@@ -127,7 +131,8 @@ export const handleDeadChatEvents = (io: Server, socket: Socket) => {
     if (room) {
       for (const socketId of room) {
         const targetSocket = io.sockets.sockets.get(socketId);
-        if (targetSocket && !(targetSocket as any).player.isAlive) {
+        const targetPlayerData = players.get(socketId);
+        if (targetSocket && targetPlayerData && !targetPlayerData.player.isAlive) {
           targetSocket.emit('deadChat:message', systemMessage);
         }
       }
@@ -141,10 +146,13 @@ export const handleDeadChatEvents = (io: Server, socket: Socket) => {
 };
 
 // 플레이어 사망 처리 시 호출할 함수
-export const notifyPlayerDeath = (io: Server, roomCode: string, player: any) => {
+export const notifyPlayerDeath = (io: Server, roomCode: string, player: any, players: Map<string, { roomCode: string; player: any }>) => {
   // 사망한 플레이어에게 데드챗 활성화 알림
   const playerSocket = [...io.sockets.sockets.values()]
-    .find(s => (s as any).player?.id === player.id);
+    .find(s => {
+      const playerData = players.get(s.id);
+      return playerData?.player?.id === player.id;
+    });
   
   if (playerSocket) {
     playerSocket.emit('deadChat:activated', {
@@ -176,7 +184,8 @@ export const notifyPlayerDeath = (io: Server, roomCode: string, player: any) => 
 
     for (const socketId of room) {
       const targetSocket = io.sockets.sockets.get(socketId);
-      if (targetSocket && !(targetSocket as any).player.isAlive && (targetSocket as any).player.id !== player.id) {
+      const targetPlayerData = players.get(socketId);
+      if (targetSocket && targetPlayerData && !targetPlayerData.player.isAlive && targetPlayerData.player.id !== player.id) {
         targetSocket.emit('deadChat:message', systemMessage);
       }
     }

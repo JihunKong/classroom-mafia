@@ -43,6 +43,30 @@ function App() {
   const [canVote, setCanVote] = useState<boolean>(false)
   const [canAct, setCanAct] = useState<boolean>(false)
   const [actionType, setActionType] = useState<string>('')
+  
+  // Network state
+  const [isOnline, setIsOnline] = useState<boolean>(navigator.onLine)
+  const [showOfflineMessage, setShowOfflineMessage] = useState<boolean>(false)
+
+  // Offline notification overlay component
+  const OfflineNotification = () => {
+    if (!showOfflineMessage || isOnline) return null
+    
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full text-center">
+          <div className="text-4xl mb-4">📱</div>
+          <h2 className="text-xl font-bold text-gray-900 mb-2">오프라인 모드</h2>
+          <p className="text-gray-600 mb-4">
+            인터넷 연결이 끊어졌습니다.<br />
+            연결이 복구되면 자동으로 게임이 재개됩니다.
+          </p>
+          <div className="animate-pulse bg-gray-200 h-2 rounded mb-4"></div>
+          <p className="text-sm text-gray-500">연결 상태를 확인하는 중...</p>
+        </div>
+      </div>
+    )
+  }
 
   // TTS 함수
   const speak = (text: string, rateOverride?: number, pitchOverride?: number) => {
@@ -134,6 +158,31 @@ function App() {
     }
   }, [timeRemaining, currentPhase])
 
+  // Network state monitoring
+  useEffect(() => {
+    const handleOnline = () => {
+      setIsOnline(true)
+      setShowOfflineMessage(false)
+      console.log('🌐 Network: Back online')
+    }
+    
+    const handleOffline = () => {
+      setIsOnline(false)
+      setShowOfflineMessage(true)
+      console.log('📱 Network: Gone offline')
+    }
+    
+    window.addEventListener('online', handleOnline)
+    window.addEventListener('offline', handleOffline)
+    
+    // Check initial state
+    setIsOnline(navigator.onLine)
+    
+    return () => {
+      window.removeEventListener('online', handleOnline)
+      window.removeEventListener('offline', handleOffline)
+    }
+  }, [])
 
   // Register service worker for PWA
   useEffect(() => {
@@ -165,13 +214,13 @@ function App() {
     
     if (!socket) return
 
-    socket.on('room:created', (data: any) => {
+    (socket as any).on('room:created', (data: any) => {
       setRoomCode(data.roomCode)
       roomCodeRef.current = data.roomCode
       setGameState('waiting')
     })
 
-    socket.on('room:joined', (data: any) => {
+    (socket as any).on('room:joined', (data: any) => {
       setPlayers(data.players)
       
       // Check if this is a reconnection (has gameState info)
@@ -206,27 +255,27 @@ function App() {
       }
     })
 
-    socket.on('error', (data: any) => {
+    (socket as any).on('error', (data: any) => {
       if (data.message?.includes('reconnected') || data.message?.includes('disconnected')) {
         setGameLog((prev: string[]) => [...prev, data.message])
       }
     })
 
-    socket.on('room:playerUpdate', (data: any) => {
+    (socket as any).on('room:playerUpdate', (data: any) => {
       setPlayers(data.players)
       if (data.message) {
         setGameLog((prev: string[]) => [...prev, data.message])
       }
     })
 
-    socket.on('game:started', (data: any) => {
+    (socket as any).on('game:started', (data: any) => {
       setGameState('game')
       setCurrentPhase(data.phase)
       setCurrentDay(data.day)
       setPhaseMessage(data.message)
     })
 
-    socket.on('role:assigned', (data: any) => {
+    (socket as any).on('role:assigned', (data: any) => {
       setMyRole(data.role)
       setRoleInfo(data.roleInfo)
       // Update myPlayer in context
@@ -242,7 +291,7 @@ function App() {
       }
     })
 
-    socket.on('phase:night', (data: any) => {
+    (socket as any).on('phase:night', (data: any) => {
       setCurrentPhase('night')
       setCurrentDay(data.day)
       setTimeRemaining(data.timeRemaining)
@@ -253,7 +302,7 @@ function App() {
       speak(`${data.day}일차 밤이 되었습니다. 마피아는 제거할 대상을 선택하세요.`, 0.85, 0.95)
     })
 
-    socket.on('phase:day', (data: any) => {
+    (socket as any).on('phase:day', (data: any) => {
       setCurrentPhase('day')
       setCurrentDay(data.day)
       setTimeRemaining(data.timeRemaining)
@@ -268,13 +317,14 @@ function App() {
           return p
         }))
       }
-      setCanVote(false)
+      // 낮 페이즈에서 투표 가능
+      setCanVote(data.canVote || false)
       setCanAct(false)
       // TTS 알림 - 낮 분위기에 맞게 밝고 활기차게
-      speak(`${data.day}일차 아침이 밝았습니다. 토론을 시작하세요.`, 0.95, 1.05)
+      speak(`${data.day}일차 아침이 밝았습니다. 토론하고 투표하세요.`, 0.95, 1.05)
     })
 
-    socket.on('phase:voting', (data: any) => {
+    (socket as any).on('phase:voting', (data: any) => {
       setCurrentPhase('voting')
       setTimeRemaining(data.timeRemaining)
       setPhaseMessage(data.message)
@@ -294,7 +344,7 @@ function App() {
       speak('투표 시간입니다. 의심스러운 사람을 선택하세요.', 0.9, 1.0)
     })
 
-    socket.on('night:actionAvailable', (data: any) => {
+    (socket as any).on('night:actionAvailable', (data: any) => {
       setCanAct(data.canAct)
       setActionType(data.actionType)
       // 더미 액션인 경우 자동으로 전송
@@ -312,12 +362,12 @@ function App() {
       }
     })
     
-    socket.on('mafia:voteStatus', (data: any) => {
+    (socket as any).on('mafia:voteStatus', (data: any) => {
       // 마피아 투표 현황 업데이트
       setGameLog((prev: string[]) => [...prev, data.message])
     })
 
-    socket.on('night:result', (data: any) => {
+    (socket as any).on('night:result', (data: any) => {
       setGameLog((prev: string[]) => [...prev, data.message])
       // 살아있는 플레이어 정보로 기존 players 업데이트
       if (data.alivePlayers) {
@@ -333,7 +383,7 @@ function App() {
       speak(data.message, 0.85, 1.0)
     })
 
-    socket.on('voting:result', (data: any) => {
+    (socket as any).on('voting:result', (data: any) => {
       setGameLog((prev: string[]) => [...prev, data.message])
       // 살아있는 플레이어 정보로 기존 players 업데이트
       if (data.alivePlayers) {
@@ -349,23 +399,31 @@ function App() {
       speak(data.message, 0.85, 1.0)
     })
 
-    socket.on('vote:confirmed', (data: any) => {
+    (socket as any).on('vote:confirmed', (data: any) => {
       setGameLog((prev: string[]) => [...prev, data.message])
       setCanVote(false)
     })
 
-    socket.on('night:actionConfirmed', (data: any) => {
+    (socket as any).on('voting:progress', (data: any) => {
+      setGameLog((prev: string[]) => [...prev, data.message])
+      // 진행률이 100%에 가까우면 빠른 진행 알림
+      if (data.voted === data.total - 1) {
+        setGameLog((prev: string[]) => [...prev, '한 명만 더 투표하면 즉시 진행됩니다!'])
+      }
+    })
+
+    (socket as any).on('night:actionConfirmed', (data: any) => {
       setGameLog((prev: string[]) => [...prev, data.message])
       setCanAct(false)
     })
 
-    socket.on('investigate:result', (data: any) => {
+    (socket as any).on('investigate:result', (data: any) => {
       const targetPlayer = players.find(p => p.id === data.target)
       const message = `조사 결과: ${targetPlayer?.name}은(는) ${data.result === 'mafia' ? '마피아' : '무고한 시민'}입니다.`
       setGameLog((prev: string[]) => [...prev, message])
     })
 
-    socket.on('game:ended', (data: any) => {
+    (socket as any).on('game:ended', (data: any) => {
       setGameState('ended')
       setWinner(data.winner)
       setPhaseMessage(data.message)
@@ -375,28 +433,29 @@ function App() {
       speak(data.message, 0.8, 0.95)
     })
 
-    socket.on('error', (data: any) => {
+    (socket as any).on('error', (data: any) => {
       alert(data.message)
     })
 
     return () => {
-      socket.off('room:created')
-      socket.off('room:joined')
-      socket.off('room:playerUpdate')
-      socket.off('game:started')
-      socket.off('role:assigned')
-      socket.off('phase:night')
-      socket.off('phase:day')
-      socket.off('phase:voting')
-      socket.off('night:actionAvailable')
-      socket.off('mafia:voteStatus')
-      socket.off('night:result')
-      socket.off('voting:result')
-      socket.off('vote:confirmed')
-      socket.off('night:actionConfirmed')
-      socket.off('investigate:result')
-      socket.off('game:ended')
-      socket.off('error')
+      ;(socket as any).off('room:created')
+      ;(socket as any).off('room:joined')
+      ;(socket as any).off('room:playerUpdate')
+      ;(socket as any).off('game:started')
+      ;(socket as any).off('role:assigned')
+      ;(socket as any).off('phase:night')
+      ;(socket as any).off('phase:day')
+      ;(socket as any).off('phase:voting')
+      ;(socket as any).off('night:actionAvailable')
+      ;(socket as any).off('mafia:voteStatus')
+      ;(socket as any).off('night:result')
+      ;(socket as any).off('voting:result')
+      ;(socket as any).off('vote:confirmed')
+      ;(socket as any).off('voting:progress')
+      ;(socket as any).off('night:actionConfirmed')
+      ;(socket as any).off('investigate:result')
+      ;(socket as any).off('game:ended')
+      ;(socket as any).off('error')
     }
   }, [socket, playerName, players])
 
@@ -521,6 +580,7 @@ function App() {
         
         {/* PWA Installer */}
         <PWAInstaller />
+        <OfflineNotification />
       </div>
     )
   }
@@ -568,6 +628,7 @@ function App() {
             )}
           </div>
         </div>
+        <OfflineNotification />
       </div>
     )
   }
@@ -752,6 +813,7 @@ function App() {
         
         {/* Dead Chat System */}
         <DeadChat />
+        <OfflineNotification />
       </div>
     )
   }
@@ -788,6 +850,7 @@ function App() {
             새 게임 시작
           </button>
         </div>
+        <OfflineNotification />
       </div>
     )
   }
@@ -796,6 +859,7 @@ function App() {
     <div>
       Unknown game state
       <PWAInstaller />
+      <OfflineNotification />
     </div>
   )
 }
