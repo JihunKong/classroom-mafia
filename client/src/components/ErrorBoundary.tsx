@@ -22,7 +22,15 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('ErrorBoundary caught an error:', error, errorInfo);
+    console.error('🚨 ErrorBoundary caught an error:', error);
+    console.error('📍 Error stack:', error.stack);
+    console.error('⚛️ Component stack:', errorInfo.componentStack);
+    
+    // Send error to console for debugging
+    if (typeof window !== 'undefined') {
+      (window as any).__REACT_ERROR__ = { error, errorInfo };
+    }
+    
     this.setState({
       error,
       errorInfo
@@ -46,17 +54,22 @@ export class ErrorBoundary extends Component<Props, State> {
               페이지를 새로고침하여 다시 시도해주세요.
             </p>
             
-            {import.meta.env.DEV && this.state.error && (
-              <details className="mb-4">
-                <summary className="cursor-pointer text-sm text-gray-600">
-                  오류 세부사항 (개발 모드)
-                </summary>
-                <pre className="mt-2 text-xs bg-gray-100 p-2 rounded overflow-auto">
-                  {this.state.error.toString()}
-                  {this.state.errorInfo && this.state.errorInfo.componentStack}
-                </pre>
-              </details>
-            )}
+            <details className="mb-4">
+              <summary className="cursor-pointer text-sm text-gray-600">
+                오류 세부사항 보기
+              </summary>
+              <pre className="mt-2 text-xs bg-gray-100 p-2 rounded overflow-auto max-h-40">
+                {this.state.error && (
+                  <>
+                    <div className="font-bold text-red-600">Error: {this.state.error.message}</div>
+                    <div className="mt-2">Stack: {this.state.error.stack}</div>
+                    {this.state.errorInfo && (
+                      <div className="mt-2">Component Stack: {this.state.errorInfo.componentStack}</div>
+                    )}
+                  </>
+                )}
+              </pre>
+            </details>
             
             <button
               onClick={this.handleReload}
