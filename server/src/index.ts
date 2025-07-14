@@ -511,10 +511,9 @@ io.on('connection', (socket) => {
         myPlayer: existingPlayer
       })
       
-      // Notify other players of reconnection
-      io.to(upperRoomCode).emit('player:reconnected', { 
-        playerId: socket.id,
-        playerName: sanitizedName,
+      // Notify other players of reconnection via game log
+      io.to(upperRoomCode).emit('room:playerUpdate', { 
+        players: room.players,
         message: `${sanitizedName}이(가) 다시 접속했습니다.`
       })
       
@@ -670,10 +669,9 @@ io.on('connection', (socket) => {
               }
             }
             
-            // Notify disconnection but keep player in game
-            io.to(roomCode).emit('player:disconnected', { 
-              playerId: socket.id,
-              playerName: player?.name || 'Unknown',
+            // Notify disconnection but keep player in game via room update
+            io.to(roomCode).emit('room:playerUpdate', { 
+              players: room.players,
               message: `${player?.name || 'Unknown'}의 연결이 끊어졌습니다. 재접속을 기다립니다.`
             });
           } else {

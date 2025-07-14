@@ -165,13 +165,13 @@ function App() {
     
     if (!socket) return
 
-    (socket as any).on('room:created', (data: any) => {
+    socket.on('room:created', (data: any) => {
       setRoomCode(data.roomCode)
       roomCodeRef.current = data.roomCode
       setGameState('waiting')
     })
 
-    (socket as any).on('room:joined', (data: any) => {
+    socket.on('room:joined', (data: any) => {
       setPlayers(data.players)
       
       // Check if this is a reconnection (has gameState info)
@@ -206,16 +206,17 @@ function App() {
       }
     })
 
-    (socket as any).on('player:reconnected', (data: any) => {
-      setGameLog((prev: string[]) => [...prev, data.message])
-    })
-
-    (socket as any).on('player:disconnected', (data: any) => {
-      setGameLog((prev: string[]) => [...prev, data.message])
+    socket.on('error', (data: any) => {
+      if (data.message?.includes('reconnected') || data.message?.includes('disconnected')) {
+        setGameLog((prev: string[]) => [...prev, data.message])
+      }
     })
 
     socket.on('room:playerUpdate', (data: any) => {
       setPlayers(data.players)
+      if (data.message) {
+        setGameLog((prev: string[]) => [...prev, data.message])
+      }
     })
 
     socket.on('game:started', (data: any) => {
@@ -381,8 +382,6 @@ function App() {
     return () => {
       socket.off('room:created')
       socket.off('room:joined')
-      ;(socket as any).off('player:reconnected')
-      ;(socket as any).off('player:disconnected')
       socket.off('room:playerUpdate')
       socket.off('game:started')
       socket.off('role:assigned')

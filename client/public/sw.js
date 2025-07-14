@@ -162,7 +162,7 @@ self.addEventListener('fetch', (event) => {
   if (url.pathname.startsWith('/assets/') || url.pathname.startsWith('/static/')) {
     // Static assets - cache first strategy
     event.respondWith(cacheFirst(request))
-  } else if (CACHEABLE_APIs.some(api => url.pathname.startsWith(api))) {
+  } else if (CACHEABLE_APIS && CACHEABLE_APIS.some(api => url.pathname.startsWith(api))) {
     // API endpoints - network first with cache fallback
     event.respondWith(networkFirst(request))
   } else if (url.pathname === '/' || url.pathname.endsWith('.html')) {
