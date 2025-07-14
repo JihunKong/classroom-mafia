@@ -1,8 +1,8 @@
 // client/src/hooks/useSocket.ts
 
 import { useContext, createContext, useEffect, useState, ReactNode } from 'react';
-import { io, Socket } from 'socket.io-client';
-import { ServerToClientEvents, SocketEvents } from '../../../shared/types';
+// Try different import approaches
+import * as SocketIO from 'socket.io-client';
 
 // For production, use window.location.origin to connect to the same origin
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 
@@ -11,7 +11,7 @@ const SOCKET_URL = import.meta.env.VITE_SOCKET_URL ||
     'http://localhost:3001');
 
 interface SocketContextType {
-  socket: Socket<ServerToClientEvents, SocketEvents> | null;
+  socket: any | null;
   isConnected: boolean;
 }
 
@@ -25,7 +25,7 @@ interface SocketProviderProps {
 }
 
 export function SocketProvider({ children }: SocketProviderProps) {
-  const [socket, setSocket] = useState<Socket<ServerToClientEvents, SocketEvents> | null>(null);
+  const [socket, setSocket] = useState<any | null>(null);
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
@@ -38,8 +38,19 @@ export function SocketProvider({ children }: SocketProviderProps) {
     
     try {
       console.log('🔧 About to call io() with URL:', SOCKET_URL);
+      console.log('🔧 SocketIO object:', SocketIO);
+      console.log('🔧 SocketIO.io:', SocketIO.io);
+      console.log('🔧 SocketIO default:', (SocketIO as any).default);
       
-      newSocket = io(SOCKET_URL, {
+      // Try multiple ways to access the io function
+      const ioFunction = SocketIO.io || (SocketIO as any).default || SocketIO;
+      console.log('🔧 Using io function:', ioFunction);
+      
+      if (typeof ioFunction !== 'function') {
+        throw new Error(`io function is not available. Got: ${typeof ioFunction}`);
+      }
+      
+      newSocket = ioFunction(SOCKET_URL, {
         transports: ['websocket', 'polling'],
         timeout: 60000,
         forceNew: true, // Force new connection
