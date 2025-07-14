@@ -1,0 +1,64 @@
+# Railway ignore file
+# Files and directories to ignore during Railway deployment
+
+# Node modules (will be installed during build)
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# Build artifacts (will be generated during build)
+client/dist/
+server/dist/
+
+# Test files and results
+playwright/
+test-results/
+playwright-report/
+*.spec.ts
+*.test.ts
+test-*.js
+
+# Development logs
+*.log
+dev.log
+client.log
+server.log
+server-test.log
+
+# Test scripts and demo files
+test-*.js
+demo-*.js
+*-test-*.js
+
+# Documentation and guides
+*README*.md
+*GUIDE*.md
+*TESTING*.md
+*DEPLOY*.md
+*CLI*.md
+
+# Example projects
+example*/
+
+# Screenshots and test artifacts
+screenshots*/
+*.png
+test-results/
+
+# Scripts for local development
+scripts/
+*.sh
+
+# Editor and OS files
+.DS_Store
+.vscode/
+.idea/
+
+# Environment files (except examples)
+.env
+.env.local
+.env.development.local
+
+# Temporary files
+*.tmp
+*.temp
