@@ -86,7 +86,7 @@ export function SocketProvider({ children }: SocketProviderProps) {
 
     return () => {
       console.log('🧹 Cleanup: closing socket');
-      if (newSocket) {
+      if (newSocket && typeof newSocket.close === 'function') {
         newSocket.close();
       }
     };

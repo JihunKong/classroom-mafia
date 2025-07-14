@@ -353,7 +353,7 @@ function App() {
         console.log(`Dummy action will be sent in ${Math.floor(delay/1000)} seconds`)
         setTimeout(() => {
           console.log(`Sending dummy action for room: ${roomCodeRef.current}`)
-          socket.emit('night:action', {
+          ;(socket as any).emit('night:action', {
             roomCode: roomCodeRef.current,
             actionType: 'dummy',
             targetPlayerId: ''
@@ -461,32 +461,32 @@ function App() {
 
   const createRoom = () => {
     if (socket && playerName) {
-      socket.emit('room:create', { playerName, maxPlayers: 20 })
+      ;(socket as any).emit('room:create', { playerName, maxPlayers: 20 })
     }
   }
 
   const joinRoom = () => {
     if (socket && playerName && roomCode) {
-      socket.emit('room:join', { playerName, roomCode })
+      ;(socket as any).emit('room:join', { playerName, roomCode })
     }
   }
 
   const startGame = () => {
     if (socket && players.length >= 6) {
-      socket.emit('game:start', { roomCode })
+      ;(socket as any).emit('game:start', { roomCode })
     }
   }
 
   const castVote = () => {
     if (socket && selectedTarget && canVote) {
-      socket.emit('vote:cast', { roomCode, targetPlayerId: selectedTarget })
+      ;(socket as any).emit('vote:cast', { roomCode, targetPlayerId: selectedTarget })
       setSelectedTarget('')
     }
   }
 
   const performNightAction = () => {
     if (socket && selectedTarget && canAct && actionType) {
-      socket.emit('night:action', { roomCode, actionType, targetPlayerId: selectedTarget })
+      ;(socket as any).emit('night:action', { roomCode, actionType, targetPlayerId: selectedTarget })
       setSelectedTarget('')
     }
   }
