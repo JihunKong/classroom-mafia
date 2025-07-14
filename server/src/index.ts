@@ -36,6 +36,31 @@ const PORT = process.env.PORT || 3001
 app.use(cors())
 app.use(express.json())
 
+// Landing page route - redirect to client
+app.get('/', (req, res) => {
+  // For Railway deployment, serve the client from the server
+  if (process.env.NODE_ENV === 'production') {
+    res.sendFile('index.html', { root: '../client/dist' })
+  } else {
+    // In development, redirect to Vite dev server
+    res.redirect('http://localhost:5173')
+  }
+})
+
+// Serve static files from client build in production
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static('../client/dist'))
+  
+  // Catch-all handler for client-side routing
+  app.get('*', (req, res) => {
+    // Skip API routes
+    if (req.path.startsWith('/api') || req.path.startsWith('/admin') || req.path.startsWith('/health')) {
+      return res.status(404).json({ error: 'API endpoint not found' })
+    }
+    res.sendFile('index.html', { root: '../client/dist' })
+  })
+}
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'healthy', timestamp: new Date().toISOString() })
