@@ -30,12 +30,12 @@ export function SocketProvider({ children }: SocketProviderProps) {
       timeout: 60000,
     });
 
-    newSocket.on('connect', () => {
+    (newSocket as any).on('connect', () => {
       setIsConnected(true);
       console.log('Connected to server');
     });
 
-    newSocket.on('disconnect', () => {
+    (newSocket as any).on('disconnect', () => {
       setIsConnected(false);
       console.log('Disconnected from server');
     });
