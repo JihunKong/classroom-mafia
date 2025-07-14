@@ -6,22 +6,13 @@ import { MobileOptimizedGame } from './components/MobileOptimizedGame'
 import { MobileOptimizedHome } from './components/MobileOptimizedHome'
 import { MobileOptimizedWaiting } from './components/MobileOptimizedWaiting'
 import { PWAInstaller } from './components/PWAInstaller'
-import { TeacherAuth } from './components/TeacherAuth'
-import { TeacherDashboard } from './components/TeacherDashboard'
 import { useSocket } from './hooks/useSocket'
 import { useGame } from './hooks/useGame'
-import { useTeacherSocket } from './hooks/useTeacherSocket'
 import { useResponsive } from './hooks/useResponsive'
 import { Player } from '../../shared/types/game'
 
 function App() {
-  // Mode state - check URL parameters for teacher mode
-  const [appMode, setAppMode] = useState<'student' | 'teacher'>(() => {
-    const urlParams = new URLSearchParams(window.location.search)
-    return urlParams.get('mode') === 'teacher' ? 'teacher' : 'student'
-  })
-
-  // Student mode hooks
+  // Game hooks
   const { socket, isConnected } = useSocket()
   const { 
     roomCode, setRoomCode, 
@@ -36,17 +27,6 @@ function App() {
     winner, setWinner
   } = useGame()
 
-  // Teacher mode hooks
-  const {
-    socket: teacherSocket,
-    isConnected: teacherConnected,
-    isAuthenticated: teacherAuthenticated,
-    teacherData,
-    connectTeacherSocket,
-    authenticateTeacher,
-    disconnectTeacher
-  } = useTeacherSocket()
-
   // Responsive design hook
   const { isMobile } = useResponsive()
   
@@ -54,6 +34,7 @@ function App() {
   const [playerName, setPlayerName] = useState('')
   const [showTTSSettings, setShowTTSSettings] = useState(false)
   const roomCodeRef = useRef<string>('')
+  const timerRef = useRef<number | null>(null)
   
   // Game state (local only)
   const [myRole, setMyRole] = useState<string>('')
@@ -113,38 +94,46 @@ function App() {
     }
   }
 
-  // Teacher mode handlers
-  const switchToTeacherMode = () => {
-    setAppMode('teacher')
-    const url = new URL(window.location.href)
-    url.searchParams.set('mode', 'teacher')
-    window.history.pushState({}, '', url.toString())
-    connectTeacherSocket()
-  }
 
-  const switchToStudentMode = () => {
-    setAppMode('student')
-    const url = new URL(window.location.href)
-    url.searchParams.delete('mode')
-    window.history.pushState({}, '', url.toString())
-    disconnectTeacher()
-  }
-
-  const handleTeacherAuth = (authData: any) => {
-    authenticateTeacher(authData.teacherName, authData.accessCode)
-  }
-
-  const handleTeacherLogout = () => {
-    disconnectTeacher()
-    switchToStudentMode()
-  }
-
-  // Initialize teacher socket if in teacher mode
+  // Real-time countdown timer
   useEffect(() => {
-    if (appMode === 'teacher' && !teacherSocket) {
-      connectTeacherSocket()
+    // Clear any existing timer
+    if (timerRef.current) {
+      clearInterval(timerRef.current)
+      timerRef.current = null
     }
-  }, [appMode])
+
+    // Start countdown if time remaining > 0 and game is in progress
+    if (timeRemaining > 0 && (currentPhase === 'day' || currentPhase === 'night' || currentPhase === 'voting')) {
+      const startTime = Date.now()
+      const initialTime = timeRemaining
+      
+      timerRef.current = window.setInterval(() => {
+        const elapsed = Date.now() - startTime
+        const newTime = initialTime - elapsed
+        
+        if (newTime <= 0) {
+          // Clear timer when time runs out
+          if (timerRef.current) {
+            clearInterval(timerRef.current)
+            timerRef.current = null
+          }
+          setTimeRemaining(0)
+        } else {
+          setTimeRemaining(Math.max(0, newTime))
+        }
+      }, 1000)
+    }
+
+    // Cleanup timer on unmount or when timeRemaining changes from server
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current)
+        timerRef.current = null
+      }
+    }
+  }, [timeRemaining, currentPhase])
+
 
   // Register service worker for PWA
   useEffect(() => {
@@ -176,19 +165,53 @@ function App() {
     
     if (!socket) return
 
-    socket.on('room:created', (data: any) => {
+    (socket as any).on('room:created', (data: any) => {
       setRoomCode(data.roomCode)
       roomCodeRef.current = data.roomCode
       setGameState('waiting')
     })
 
-    socket.on('room:joined', (data: any) => {
+    (socket as any).on('room:joined', (data: any) => {
       setPlayers(data.players)
-      setGameState('waiting')
-      if (data.roomCode) {
+      
+      // Check if this is a reconnection (has gameState info)
+      if (data.gameState) {
         setRoomCode(data.roomCode)
         roomCodeRef.current = data.roomCode
+        
+        // Restore game state if game is in progress
+        if (data.gameState.isStarted) {
+          setGameState('game')
+          setCurrentPhase(data.gameState.phase)
+          setCurrentDay(data.gameState.day)
+          setTimeRemaining(data.gameState.timeRemaining)
+          
+          // Restore player's role if available
+          if (data.myPlayer && data.myPlayer.role) {
+            setMyRole(data.myPlayer.role)
+            setMyPlayer(data.myPlayer)
+          }
+        } else {
+          setGameState('waiting')
+        }
+        
+        console.log('Successfully reconnected to game')
+      } else {
+        // Normal room join
+        setGameState('waiting')
+        if (data.roomCode) {
+          setRoomCode(data.roomCode)
+          roomCodeRef.current = data.roomCode
+        }
       }
+    })
+
+    (socket as any).on('player:reconnected', (data: any) => {
+      setGameLog((prev: string[]) => [...prev, data.message])
+    })
+
+    (socket as any).on('player:disconnected', (data: any) => {
+      setGameLog((prev: string[]) => [...prev, data.message])
     })
 
     socket.on('room:playerUpdate', (data: any) => {
@@ -358,6 +381,8 @@ function App() {
     return () => {
       socket.off('room:created')
       socket.off('room:joined')
+      ;(socket as any).off('player:reconnected')
+      ;(socket as any).off('player:disconnected')
       socket.off('room:playerUpdate')
       socket.off('game:started')
       socket.off('role:assigned')
@@ -415,47 +440,7 @@ function App() {
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`
   }
 
-  // Teacher Mode Rendering
-  if (appMode === 'teacher') {
-    if (!teacherConnected) {
-      return (
-        <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md text-center">
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">교사 대시보드 연결 중...</h1>
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <p className="text-gray-600 mb-6">서버에 연결하는 중입니다.</p>
-            <button
-              onClick={switchToStudentMode}
-              className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400"
-            >
-              학생 모드로 돌아가기
-            </button>
-          </div>
-        </div>
-      )
-    }
-
-    if (!teacherAuthenticated) {
-      return (
-        <TeacherAuth
-          onAuthenticated={handleTeacherAuth}
-          onCancel={switchToStudentMode}
-        />
-      )
-    }
-
-    if (teacherData) {
-      return (
-        <TeacherDashboard
-          teacherData={teacherData}
-          socket={teacherSocket}
-          onLogout={handleTeacherLogout}
-        />
-      )
-    }
-  }
-
-  // Student Mode Rendering
+  // Main App Rendering
   if (gameState === 'home') {
     if (isMobile) {
       return (
@@ -467,7 +452,6 @@ function App() {
           isConnected={isConnected}
           createRoom={createRoom}
           joinRoom={joinRoom}
-          switchToTeacherMode={switchToTeacherMode}
         />
       )
     }
@@ -528,18 +512,6 @@ function App() {
               </button>
             </div>
             
-            {/* Teacher Mode Button */}
-            <div className="pt-4 border-t border-gray-200">
-              <button
-                onClick={switchToTeacherMode}
-                className="w-full bg-purple-600 text-white p-3 rounded-lg hover:bg-purple-700 text-sm font-medium"
-              >
-                👨‍🏫 교사 모드로 전환
-              </button>
-              <p className="text-xs text-gray-500 text-center mt-1">
-                클래스룸 관리 및 게임 감독
-              </p>
-            </div>
           </div>
         </div>
         

@@ -483,17 +483,65 @@ io.on('connection', (socket) => {
       return
     }
 
+    // Check for existing player (reconnection)
+    const existingPlayer = room.players.find(p => p.name === sanitizedName)
+    
+    if (existingPlayer && existingPlayer.socketId === undefined) {
+      // Reconnection: Update existing player's socket info
+      existingPlayer.socketId = socket.id
+      existingPlayer.id = socket.id
+      players.set(socket.id, { roomCode: upperRoomCode, player: existingPlayer })
+      
+      socket.join(upperRoomCode)
+      
+      // Set socket metadata for dead chat
+      ;(socket as any).roomCode = upperRoomCode
+      ;(socket as any).player = existingPlayer
+      
+      // Send reconnection success with current game state via room:joined
+      socket.emit('room:joined', { 
+        roomCode: upperRoomCode, 
+        players: room.players,
+        gameState: {
+          isStarted: room.isStarted,
+          phase: room.phase,
+          day: room.day,
+          timeRemaining: room.timeRemaining || 0
+        },
+        myPlayer: existingPlayer
+      })
+      
+      // Notify other players of reconnection
+      io.to(upperRoomCode).emit('player:reconnected', { 
+        playerId: socket.id,
+        playerName: sanitizedName,
+        message: `${sanitizedName}이(가) 다시 접속했습니다.`
+      })
+      
+      console.log(`${sanitizedName} reconnected to room ${upperRoomCode}`)
+      return
+    }
+    
+    // Check if room is full for new players
     if (room.players.length >= room.maxPlayers) {
       socket.emit('error', { message: '방이 가득 찼습니다.' })
       return
     }
+    
+    // Check if player name already exists for active players
+    if (existingPlayer && existingPlayer.socketId !== undefined) {
+      socket.emit('error', { message: '이미 사용 중인 이름입니다.' })
+      return
+    }
 
+    // Create new player
     const player = GameStateManager.createEnhancedPlayer({
       id: socket.id,
       name: sanitizedName,
       isHost: false,
       isAlive: true,
-      role: ''
+      role: '',
+      socketId: socket.id
     })
 
     room.players.push(player)

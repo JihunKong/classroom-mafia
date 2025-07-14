@@ -11,7 +11,6 @@ interface MobileOptimizedHomeProps {
   isConnected: boolean
   createRoom: () => void
   joinRoom: () => void
-  switchToTeacherMode: () => void
 }
 
 export const MobileOptimizedHome: React.FC<MobileOptimizedHomeProps> = ({
@@ -21,8 +20,7 @@ export const MobileOptimizedHome: React.FC<MobileOptimizedHomeProps> = ({
   setRoomCode,
   isConnected,
   createRoom,
-  joinRoom,
-  switchToTeacherMode
+  joinRoom
 }) => {
   const [showTTSSettings, setShowTTSSettings] = useState(false)
 
@@ -118,21 +116,6 @@ export const MobileOptimizedHome: React.FC<MobileOptimizedHomeProps> = ({
         </div>
       </div>
 
-      {/* Teacher Mode Access */}
-      <div className="px-6 py-6">
-        <div className="bg-purple-500 bg-opacity-20 backdrop-blur-sm rounded-xl p-4 border border-purple-400 border-opacity-30">
-          <button
-            onClick={switchToTeacherMode}
-            className="w-full text-center"
-          >
-            <div className="flex items-center justify-center space-x-2 mb-2">
-              <span className="text-2xl">👨‍🏫</span>
-              <span className="text-white font-medium">교사 모드</span>
-            </div>
-            <p className="text-purple-200 text-sm">클래스룸 관리 및 게임 감독</p>
-          </button>
-        </div>
-      </div>
 
       {/* Game Features */}
       <div className="px-6 pb-safe-bottom pb-6">
