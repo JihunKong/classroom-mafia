@@ -19,7 +19,7 @@ export const DeadChat: React.FC = () => {
   useEffect(() => {
     if (!socket) return;
 
-    socket.on('deadChat:message', (message: DeadChatMessage) => {
+    (socket as any).on('deadChat:message', (message: DeadChatMessage) => {
       setMessages(prev => [...prev, message]);
       
       // 최소화 상태일 때 읽지 않은 메시지 카운트 증가
@@ -28,19 +28,19 @@ export const DeadChat: React.FC = () => {
       }
     });
 
-    socket.on('deadChat:history', (history: DeadChatMessage[]) => {
+    (socket as any).on('deadChat:history', (history: DeadChatMessage[]) => {
       setMessages(history);
     });
 
-    socket.on('deadChat:activated', () => {
+    (socket as any).on('deadChat:activated', () => {
       // 사망 시 데드챗 히스토리 요청
       socket.emit('deadChat:getHistory');
     });
 
     return () => {
-      socket.off('deadChat:message');
-      socket.off('deadChat:history');
-      socket.off('deadChat:activated');
+      (socket as any).off('deadChat:message');
+      (socket as any).off('deadChat:history');
+      (socket as any).off('deadChat:activated');
     };
   }, [socket, isMinimized]);
 
