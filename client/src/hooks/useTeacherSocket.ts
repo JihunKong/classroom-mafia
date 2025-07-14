@@ -3,9 +3,11 @@
 import { useEffect, useState, useRef } from 'react'
 import { io, Socket } from 'socket.io-client'
 
-// For production, use relative URL to connect to the same origin
+// For production, use window.location.origin to connect to the same origin
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 
-  (import.meta.env.PROD ? '' : 'http://localhost:3001')
+  (import.meta.env.PROD ? 
+    (typeof window !== 'undefined' ? window.location.origin : 'https://classroom-mafia-production.up.railway.app') : 
+    'http://localhost:3001')
 
 interface TeacherSocketState {
   socket: Socket | null

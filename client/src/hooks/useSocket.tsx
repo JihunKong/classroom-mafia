@@ -4,9 +4,11 @@ import { useContext, createContext, useEffect, useState, ReactNode } from 'react
 import { io, Socket } from 'socket.io-client';
 import { ServerToClientEvents, SocketEvents } from '../../../shared/types';
 
-// For production, use relative URL to connect to the same origin
+// For production, use window.location.origin to connect to the same origin
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 
-  (import.meta.env.PROD ? '' : 'http://localhost:3001');
+  (import.meta.env.PROD ? 
+    (typeof window !== 'undefined' ? window.location.origin : 'https://classroom-mafia-production.up.railway.app') : 
+    'http://localhost:3001');
 
 interface SocketContextType {
   socket: Socket<ServerToClientEvents, SocketEvents> | null;
@@ -35,18 +37,30 @@ export function SocketProvider({ children }: SocketProviderProps) {
     let newSocket: any;
     
     try {
+      console.log('🔧 About to call io() with URL:', SOCKET_URL);
+      
       newSocket = io(SOCKET_URL, {
         transports: ['websocket', 'polling'],
         timeout: 60000,
+        forceNew: true, // Force new connection
+        upgrade: true,
+        autoConnect: true
       });
 
       console.log('✅ Socket object created:', newSocket);
+      console.log('🔧 Socket constructor:', newSocket.constructor.name);
       console.log('🔧 Socket.on function exists:', typeof newSocket.on);
+      console.log('🔧 Socket prototype:', Object.getPrototypeOf(newSocket));
 
-      // Validate socket was created properly
-      if (!newSocket || typeof newSocket.on !== 'function') {
-        console.error('❌ Socket creation failed - invalid socket object');
-        throw new Error('Socket creation failed');
+      // Additional validation
+      if (!newSocket) {
+        throw new Error('Socket creation returned null/undefined');
+      }
+      
+      if (typeof newSocket.on !== 'function') {
+        console.error('❌ Socket.on is not a function, got:', typeof newSocket.on);
+        console.error('❌ Socket object keys:', Object.keys(newSocket));
+        throw new Error(`Socket.on is not a function, got: ${typeof newSocket.on}`);
       }
 
       newSocket.on('connect', () => {
