@@ -53,7 +53,9 @@ screenshots-progressive/
 screenshots-scenarios/
 test-*.js
 demo-*.js
-*.png
+screenshots/*.png
+test-*.png
+docker-test-result.png
 
 # Generated files
 server.log
