@@ -214,13 +214,13 @@ function App() {
     
     if (!socket) return
 
-    (socket as any).on('room:created', (data: any) => {
+    socket.on('room:created', (data: any) => {
       setRoomCode(data.roomCode)
       roomCodeRef.current = data.roomCode
       setGameState('waiting')
     })
 
-    (socket as any).on('room:joined', (data: any) => {
+    socket.on('room:joined', (data: any) => {
       setPlayers(data.players)
       
       // Check if this is a reconnection (has gameState info)
@@ -255,27 +255,27 @@ function App() {
       }
     })
 
-    (socket as any).on('error', (data: any) => {
+    socket.on('error', (data: any) => {
       if (data.message?.includes('reconnected') || data.message?.includes('disconnected')) {
         setGameLog((prev: string[]) => [...prev, data.message])
       }
     })
 
-    (socket as any).on('room:playerUpdate', (data: any) => {
+    socket.on('room:playerUpdate', (data: any) => {
       setPlayers(data.players)
       if (data.message) {
         setGameLog((prev: string[]) => [...prev, data.message])
       }
     })
 
-    (socket as any).on('game:started', (data: any) => {
+    socket.on('game:started', (data: any) => {
       setGameState('game')
       setCurrentPhase(data.phase)
       setCurrentDay(data.day)
       setPhaseMessage(data.message)
     })
 
-    (socket as any).on('role:assigned', (data: any) => {
+    socket.on('role:assigned', (data: any) => {
       setMyRole(data.role)
       setRoleInfo(data.roleInfo)
       // Update myPlayer in context
@@ -291,7 +291,7 @@ function App() {
       }
     })
 
-    (socket as any).on('phase:night', (data: any) => {
+    socket.on('phase:night', (data: any) => {
       setCurrentPhase('night')
       setCurrentDay(data.day)
       setTimeRemaining(data.timeRemaining)
@@ -302,7 +302,7 @@ function App() {
       speak(`${data.day}일차 밤이 되었습니다. 마피아는 제거할 대상을 선택하세요.`, 0.85, 0.95)
     })
 
-    (socket as any).on('phase:day', (data: any) => {
+    socket.on('phase:day', (data: any) => {
       setCurrentPhase('day')
       setCurrentDay(data.day)
       setTimeRemaining(data.timeRemaining)
@@ -324,7 +324,7 @@ function App() {
       speak(`${data.day}일차 아침이 밝았습니다. 토론하고 투표하세요.`, 0.95, 1.05)
     })
 
-    (socket as any).on('phase:voting', (data: any) => {
+    socket.on('phase:voting', (data: any) => {
       setCurrentPhase('voting')
       setTimeRemaining(data.timeRemaining)
       setPhaseMessage(data.message)
@@ -344,7 +344,7 @@ function App() {
       speak('투표 시간입니다. 의심스러운 사람을 선택하세요.', 0.9, 1.0)
     })
 
-    (socket as any).on('night:actionAvailable', (data: any) => {
+    socket.on('night:actionAvailable', (data: any) => {
       setCanAct(data.canAct)
       setActionType(data.actionType)
       // 더미 액션인 경우 자동으로 전송
@@ -353,7 +353,7 @@ function App() {
         console.log(`Dummy action will be sent in ${Math.floor(delay/1000)} seconds`)
         setTimeout(() => {
           console.log(`Sending dummy action for room: ${roomCodeRef.current}`)
-          ;(socket as any).emit('night:action', {
+          ;socket.emit('night:action', {
             roomCode: roomCodeRef.current,
             actionType: 'dummy',
             targetPlayerId: ''
@@ -362,12 +362,12 @@ function App() {
       }
     })
     
-    (socket as any).on('mafia:voteStatus', (data: any) => {
+    socket.on('mafia:voteStatus', (data: any) => {
       // 마피아 투표 현황 업데이트
       setGameLog((prev: string[]) => [...prev, data.message])
     })
 
-    (socket as any).on('night:result', (data: any) => {
+    socket.on('night:result', (data: any) => {
       setGameLog((prev: string[]) => [...prev, data.message])
       // 살아있는 플레이어 정보로 기존 players 업데이트
       if (data.alivePlayers) {
@@ -383,7 +383,7 @@ function App() {
       speak(data.message, 0.85, 1.0)
     })
 
-    (socket as any).on('voting:result', (data: any) => {
+    socket.on('voting:result', (data: any) => {
       setGameLog((prev: string[]) => [...prev, data.message])
       // 살아있는 플레이어 정보로 기존 players 업데이트
       if (data.alivePlayers) {
@@ -399,12 +399,12 @@ function App() {
       speak(data.message, 0.85, 1.0)
     })
 
-    (socket as any).on('vote:confirmed', (data: any) => {
+    socket.on('vote:confirmed', (data: any) => {
       setGameLog((prev: string[]) => [...prev, data.message])
       setCanVote(false)
     })
 
-    (socket as any).on('voting:progress', (data: any) => {
+    socket.on('voting:progress', (data: any) => {
       setGameLog((prev: string[]) => [...prev, data.message])
       // 진행률이 100%에 가까우면 빠른 진행 알림
       if (data.voted === data.total - 1) {
@@ -412,18 +412,18 @@ function App() {
       }
     })
 
-    (socket as any).on('night:actionConfirmed', (data: any) => {
+    socket.on('night:actionConfirmed', (data: any) => {
       setGameLog((prev: string[]) => [...prev, data.message])
       setCanAct(false)
     })
 
-    (socket as any).on('investigate:result', (data: any) => {
+    socket.on('investigate:result', (data: any) => {
       const targetPlayer = players.find(p => p.id === data.target)
       const message = `조사 결과: ${targetPlayer?.name}은(는) ${data.result === 'mafia' ? '마피아' : '무고한 시민'}입니다.`
       setGameLog((prev: string[]) => [...prev, message])
     })
 
-    (socket as any).on('game:ended', (data: any) => {
+    socket.on('game:ended', (data: any) => {
       setGameState('ended')
       setWinner(data.winner)
       setPhaseMessage(data.message)
@@ -433,60 +433,60 @@ function App() {
       speak(data.message, 0.8, 0.95)
     })
 
-    (socket as any).on('error', (data: any) => {
+    socket.on('error', (data: any) => {
       alert(data.message)
     })
 
     return () => {
-      ;(socket as any).off('room:created')
-      ;(socket as any).off('room:joined')
-      ;(socket as any).off('room:playerUpdate')
-      ;(socket as any).off('game:started')
-      ;(socket as any).off('role:assigned')
-      ;(socket as any).off('phase:night')
-      ;(socket as any).off('phase:day')
-      ;(socket as any).off('phase:voting')
-      ;(socket as any).off('night:actionAvailable')
-      ;(socket as any).off('mafia:voteStatus')
-      ;(socket as any).off('night:result')
-      ;(socket as any).off('voting:result')
-      ;(socket as any).off('vote:confirmed')
-      ;(socket as any).off('voting:progress')
-      ;(socket as any).off('night:actionConfirmed')
-      ;(socket as any).off('investigate:result')
-      ;(socket as any).off('game:ended')
-      ;(socket as any).off('error')
+      ;socket.off('room:created')
+      ;socket.off('room:joined')
+      ;socket.off('room:playerUpdate')
+      ;socket.off('game:started')
+      ;socket.off('role:assigned')
+      ;socket.off('phase:night')
+      ;socket.off('phase:day')
+      ;socket.off('phase:voting')
+      ;socket.off('night:actionAvailable')
+      ;socket.off('mafia:voteStatus')
+      ;socket.off('night:result')
+      ;socket.off('voting:result')
+      ;socket.off('vote:confirmed')
+      ;socket.off('voting:progress')
+      ;socket.off('night:actionConfirmed')
+      ;socket.off('investigate:result')
+      ;socket.off('game:ended')
+      ;socket.off('error')
     }
   }, [socket, playerName, players])
 
   const createRoom = () => {
     if (socket && playerName) {
-      ;(socket as any).emit('room:create', { playerName, maxPlayers: 20 })
+      ;socket.emit('room:create', { playerName, maxPlayers: 20 })
     }
   }
 
   const joinRoom = () => {
     if (socket && playerName && roomCode) {
-      ;(socket as any).emit('room:join', { playerName, roomCode })
+      ;socket.emit('room:join', { playerName, roomCode })
     }
   }
 
   const startGame = () => {
     if (socket && players.length >= 6) {
-      ;(socket as any).emit('game:start', { roomCode })
+      ;socket.emit('game:start', { roomCode })
     }
   }
 
   const castVote = () => {
     if (socket && selectedTarget && canVote) {
-      ;(socket as any).emit('vote:cast', { roomCode, targetPlayerId: selectedTarget })
+      ;socket.emit('vote:cast', { roomCode, targetPlayerId: selectedTarget })
       setSelectedTarget('')
     }
   }
 
   const performNightAction = () => {
     if (socket && selectedTarget && canAct && actionType) {
-      ;(socket as any).emit('night:action', { roomCode, actionType, targetPlayerId: selectedTarget })
+      ;socket.emit('night:action', { roomCode, actionType, targetPlayerId: selectedTarget })
       setSelectedTarget('')
     }
   }

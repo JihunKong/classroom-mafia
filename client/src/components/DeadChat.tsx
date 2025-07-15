@@ -19,7 +19,7 @@ export const DeadChat: React.FC = () => {
   useEffect(() => {
     if (!socket) return;
 
-    (socket as any).on('deadChat:message', (message: DeadChatMessage) => {
+    socket.on('deadChat:message', (message: DeadChatMessage) => {
       setMessages(prev => [...prev, message]);
       
       // 최소화 상태일 때 읽지 않은 메시지 카운트 증가
@@ -28,19 +28,19 @@ export const DeadChat: React.FC = () => {
       }
     });
 
-    (socket as any).on('deadChat:history', (history: DeadChatMessage[]) => {
+    socket.on('deadChat:history', (history: DeadChatMessage[]) => {
       setMessages(history);
     });
 
-    (socket as any).on('deadChat:activated', () => {
+    socket.on('deadChat:activated', () => {
       // 사망 시 데드챗 히스토리 요청
-      ;(socket as any).emit('deadChat:getHistory');
+      ;socket.emit('deadChat:getHistory');
     });
 
     return () => {
-      (socket as any).off('deadChat:message');
-      (socket as any).off('deadChat:history');
-      (socket as any).off('deadChat:activated');
+      socket.off('deadChat:message');
+      socket.off('deadChat:history');
+      socket.off('deadChat:activated');
     };
   }, [socket, isMinimized]);
 
@@ -62,7 +62,7 @@ export const DeadChat: React.FC = () => {
   const sendMessage = () => {
     if (!inputMessage.trim() || !socket || !myPlayer) return;
 
-    ;(socket as any).emit('deadChat:send', {
+    ;socket.emit('deadChat:send', {
       message: inputMessage.trim()
     });
 

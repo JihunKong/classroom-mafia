@@ -15,11 +15,12 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    sourcemap: false,
+    sourcemap: true, // Enable sourcemaps for debugging
     rollupOptions: {
       output: {
         manualChunks: {
-          vendor: ['react', 'react-dom']
+          vendor: ['react', 'react-dom'],
+          socketio: ['socket.io-client']
         }
       }
     }

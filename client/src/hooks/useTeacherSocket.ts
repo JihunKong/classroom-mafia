@@ -1,7 +1,7 @@
 // client/src/hooks/useTeacherSocket.ts
 
 import { useEffect, useState, useRef } from 'react'
-import { io as socketIOClient } from 'socket.io-client'
+import { io, Socket } from 'socket.io-client'
 
 // For production, use window.location.origin to connect to the same origin
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 
@@ -10,7 +10,7 @@ const SOCKET_URL = import.meta.env.VITE_SOCKET_URL ||
     'http://localhost:3001')
 
 interface TeacherSocketState {
-  socket: any | null
+  socket: Socket | null
   isConnected: boolean
   isAuthenticated: boolean
   teacherData: {
@@ -30,7 +30,7 @@ export const useTeacherSocket = () => {
     error: null
   })
 
-  const socketRef = useRef<any | null>(null)
+  const socketRef = useRef<Socket | null>(null)
   const reconnectTimeoutRef = useRef<ReturnType<typeof setTimeout>>()
 
   const connectTeacherSocket = () => {
@@ -42,7 +42,7 @@ export const useTeacherSocket = () => {
     }
 
     // Create new socket connection to teacher namespace
-    const socket = socketIOClient(`${SOCKET_URL}/teacher`, {
+    const socket = io(`${SOCKET_URL}/teacher`, {
       transports: ['websocket', 'polling'],
       timeout: 20000,
       forceNew: true
@@ -50,7 +50,7 @@ export const useTeacherSocket = () => {
 
     socketRef.current = socket
 
-    ;(socket as any).on('connect', () => {
+    socket.on('connect', () => {
       console.log('Teacher socket connected')
       setState(prev => ({ 
         ...prev, 
@@ -60,7 +60,7 @@ export const useTeacherSocket = () => {
       }))
     })
 
-    ;(socket as any).on('disconnect', (reason: string) => {
+    socket.on('disconnect', (reason: string) => {
       console.log('Teacher socket disconnected:', reason)
       setState(prev => ({ 
         ...prev, 
@@ -78,7 +78,7 @@ export const useTeacherSocket = () => {
       }
     })
 
-    ;(socket as any).on('teacher:authenticated', (data: any) => {
+    socket.on('teacher:authenticated', (data: any) => {
       console.log('Teacher authenticated:', data)
       setState(prev => ({ 
         ...prev, 
@@ -92,7 +92,7 @@ export const useTeacherSocket = () => {
       }))
     })
 
-    ;(socket as any).on('teacher:authFailed', (data: any) => {
+    socket.on('teacher:authFailed', (data: any) => {
       console.log('Teacher authentication failed:', data)
       setState(prev => ({ 
         ...prev, 
@@ -102,7 +102,7 @@ export const useTeacherSocket = () => {
       }))
     })
 
-    ;(socket as any).on('connect_error', (error: any) => {
+    socket.on('connect_error', (error: any) => {
       console.error('Teacher socket connection error:', error)
       setState(prev => ({ 
         ...prev, 
@@ -110,7 +110,7 @@ export const useTeacherSocket = () => {
       }))
     })
 
-    ;(socket as any).on('error', (data: any) => {
+    socket.on('error', (data: any) => {
       console.error('Teacher socket error:', data)
       setState(prev => ({ 
         ...prev, 

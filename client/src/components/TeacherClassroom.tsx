@@ -1,9 +1,10 @@
 // client/src/components/TeacherClassroom.tsx
 
 import { useState } from 'react'
+import { Socket } from 'socket.io-client'
 
 interface TeacherClassroomProps {
-  socket: any
+  socket: Socket
   currentSession: any
   setCurrentSession: (session: any) => void
   rooms: any[]

@@ -1,9 +1,10 @@
 // client/src/components/TeacherSettings.tsx
 
 import { useState, useEffect } from 'react'
+import { Socket } from 'socket.io-client'
 
 interface TeacherSettingsProps {
-  socket: any
+  socket: Socket
   currentSession: any
   setCurrentSession: (session: any) => void
 }
@@ -60,10 +61,10 @@ export const TeacherSettings: React.FC<TeacherSettingsProps> = ({
     const handleSuccess = () => {
       setHasChanges(false)
       setIsSaving(false)
-      ;(socket as any).off('settings:updated', handleSuccess)
+      ;socket.off('settings:updated', handleSuccess)
     }
 
-    ;(socket as any).on('settings:updated', handleSuccess)
+    ;socket.on('settings:updated', handleSuccess)
   }
 
   const resetSettings = () => {
