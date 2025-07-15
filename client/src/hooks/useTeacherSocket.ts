@@ -1,13 +1,7 @@
 // client/src/hooks/useTeacherSocket.ts
 
 import { useEffect, useState, useRef } from 'react'
-
-// Use global Socket.io from CDN
-declare global {
-  interface Window {
-    io: any;
-  }
-}
+import { io as socketIOClient } from 'socket.io-client'
 
 // For production, use window.location.origin to connect to the same origin
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 
@@ -47,8 +41,8 @@ export const useTeacherSocket = () => {
       socketRef.current.disconnect()
     }
 
-    // Create new socket connection to teacher namespace using CDN Socket.io
-    const socket = window.io(`${SOCKET_URL}/teacher`, {
+    // Create new socket connection to teacher namespace
+    const socket = socketIOClient(`${SOCKET_URL}/teacher`, {
       transports: ['websocket', 'polling'],
       timeout: 20000,
       forceNew: true

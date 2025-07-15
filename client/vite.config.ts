@@ -11,7 +11,7 @@ export default defineConfig({
     }
   },
   optimizeDeps: {
-    include: []
+    include: ['socket.io-client']
   },
   build: {
     outDir: 'dist',

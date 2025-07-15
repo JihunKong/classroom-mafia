@@ -1,13 +1,7 @@
 // client/src/hooks/useSocket.ts
 
 import { useContext, createContext, useEffect, useState, ReactNode } from 'react';
-
-// Use global Socket.io from CDN
-declare global {
-  interface Window {
-    io: any;
-  }
-}
+import { io as socketIOClient } from 'socket.io-client';
 
 // For production, use window.location.origin to connect to the same origin
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 
@@ -43,13 +37,12 @@ export function SocketProvider({ children }: SocketProviderProps) {
     
     try {
       console.log('🔧 About to call io() with URL:', SOCKET_URL);
-      console.log('🔧 Using CDN Socket.io from window.io:', window.io);
       
-      // Use Socket.io from CDN
-      const ioFunction = window.io;
+      // Use Socket.io from npm package
+      const ioFunction = socketIOClient;
       
       if (typeof ioFunction !== 'function') {
-        throw new Error(`Socket.io CDN not loaded. Got: ${typeof ioFunction}`);
+        throw new Error(`Socket.io not available. Got: ${typeof ioFunction}`);
       }
       
       newSocket = ioFunction(SOCKET_URL, {
