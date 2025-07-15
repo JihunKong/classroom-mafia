@@ -1,7 +1,10 @@
 // client/src/hooks/useSocket.ts
 
 import { useContext, createContext, useEffect, useState, ReactNode } from 'react';
-import { io, Socket } from 'socket.io-client';
+import * as SocketIOClient from 'socket.io-client';
+import type { Socket } from 'socket.io-client';
+
+const io = SocketIOClient.io || (SocketIOClient as any).default?.io || (SocketIOClient as any).default;
 
 // For production, use window.location.origin to connect to the same origin
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 
@@ -37,6 +40,14 @@ export function SocketProvider({ children }: SocketProviderProps) {
     
     try {
       console.log('🔧 About to call io() with URL:', SOCKET_URL);
+      console.log('🔧 SocketIOClient:', SocketIOClient);
+      console.log('🔧 SocketIOClient.io:', SocketIOClient.io);
+      console.log('🔧 io function:', io);
+      console.log('🔧 typeof io:', typeof io);
+      
+      if (typeof io !== 'function') {
+        throw new Error(`io is not a function. Got: ${typeof io}. SocketIOClient keys: ${Object.keys(SocketIOClient).join(', ')}`);
+      }
       
       // Create socket instance
       newSocket = io(SOCKET_URL, {

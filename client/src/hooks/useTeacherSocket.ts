@@ -1,7 +1,10 @@
 // client/src/hooks/useTeacherSocket.ts
 
 import { useEffect, useState, useRef } from 'react'
-import { io, Socket } from 'socket.io-client'
+import * as SocketIOClient from 'socket.io-client'
+import type { Socket } from 'socket.io-client'
+
+const io = SocketIOClient.io || (SocketIOClient as any).default?.io || (SocketIOClient as any).default
 
 // For production, use window.location.origin to connect to the same origin
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 
