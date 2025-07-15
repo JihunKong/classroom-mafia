@@ -1160,9 +1160,35 @@ async function processNightActionsEnhanced(roomCode: string) {
     
   } catch (error) {
     console.error(`Error processing night actions for room ${roomCode}:`, error)
+    console.error(`Error stack:`, error instanceof Error ? error.stack : 'No stack trace')
     
-    // Fallback to old system if enhanced processing fails
-    processNightActions(roomCode)
+    // Only fallback for critical errors
+    if (error instanceof Error && 
+        (error.message.includes('Cannot read') || 
+         error.message.includes('is not defined') ||
+         error.message.includes('undefined'))) {
+      console.warn(`Critical error detected, using fallback processing for room ${roomCode}`)
+      processNightActions(roomCode)
+    } else {
+      // For non-critical errors, still try to continue the game
+      console.log(`Non-critical error, continuing to day phase for room ${roomCode}`)
+      
+      // Basic night result message
+      io.to(roomCode).emit('night:result', {
+        message: '밤이 지나갔습니다.',
+        deadPlayers: room.players.filter(p => !p.isAlive),
+        alivePlayers: room.players.filter(p => p.isAlive)
+      })
+      
+      // Check win conditions
+      if (checkWinCondition(roomCode)) {
+        return
+      }
+      
+      // Continue to day phase
+      room.day++
+      setTimeout(() => startDayPhase(roomCode), 3000)
+    }
   }
 }
 
@@ -1220,14 +1246,22 @@ function processNightActions(roomCode: string) {
   })
   
   // 살해 시도 처리 (의사의 치료와 대조)
-  if (killTarget && killTarget !== healTarget) {
+  if (killTarget) {
     const targetPlayer = room.players.find(p => p.id === killTarget)
     if (targetPlayer) {
-      targetPlayer.isAlive = false
-      room.gameLog.push(`${targetPlayer.name}이(가) 밤에 사망했습니다.`)
-      
-      // Notify dead chat system
-      notifyPlayerDeath(io, roomCode, targetPlayer, players)
+      if (killTarget === healTarget) {
+        // 의사가 치료했으므로 생존
+        room.gameLog.push(`${targetPlayer.name}이(가) 의사의 치료로 생명을 구했습니다!`)
+        console.log(`${targetPlayer.name} was saved by doctor's heal`)
+      } else {
+        // 치료받지 못했으므로 사망
+        targetPlayer.isAlive = false
+        room.gameLog.push(`${targetPlayer.name}이(가) 밤에 사망했습니다.`)
+        console.log(`${targetPlayer.name} was killed by mafia`)
+        
+        // Notify dead chat system
+        notifyPlayerDeath(io, roomCode, targetPlayer, players)
+      }
     }
   }
   
@@ -1245,9 +1279,17 @@ function processNightActions(roomCode: string) {
   }
   
   // 밤 결과 알림
-  const dayResultMessage = killTarget && killTarget !== healTarget ? 
-    `밤 사이에 ${room.players.find(p => p.id === killTarget)?.name}이(가) 사망했습니다.` :
-    '평화로운 밤이었습니다.'
+  let dayResultMessage = '평화로운 밤이었습니다.'
+  if (killTarget) {
+    const targetPlayer = room.players.find(p => p.id === killTarget)
+    if (targetPlayer) {
+      if (killTarget === healTarget) {
+        dayResultMessage = `${targetPlayer.name}이(가) 의사의 치료로 생명을 구했습니다!`
+      } else if (!targetPlayer.isAlive) {
+        dayResultMessage = `밤 사이에 ${targetPlayer.name}이(가) 사망했습니다.`
+      }
+    }
+  }
   
   io.to(roomCode).emit('night:result', {
     message: dayResultMessage,
