@@ -135,7 +135,14 @@ export class RoleService {
   validateTarget(actor: Player, target: Player, action: string, room: EnhancedRoom): boolean {
     // Basic validation
     if (!target.isAlive) return false;
-    if (actor.id === target.id) return false;
+    
+    // Allow self-targeting for certain abilities
+    if (actor.id === target.id) {
+      // Doctor can heal themselves
+      if (action === 'heal') return true;
+      // Default: no self-targeting
+      return false;
+    }
 
     // Role-specific target validation
     switch (action) {

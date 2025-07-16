@@ -640,6 +640,24 @@ io.on('connection', (socket) => {
       })
     })
     
+    // 마피아 팀 멤버들에게 서로의 정보 전달
+    const mafiaTeamMembers = room.players.filter(p => 
+      ROLES[p.role].team === 'mafia'
+    )
+    
+    mafiaTeamMembers.forEach(mafiaPlayer => {
+      const teammates = mafiaTeamMembers.filter(p => p.id !== mafiaPlayer.id)
+      io.to(mafiaPlayer.id).emit('mafia:teammates', {
+        teammates: teammates.map(teammate => ({
+          id: teammate.id,
+          name: teammate.name,
+          role: teammate.role,
+          roleName: ROLES[teammate.role].name
+        })),
+        message: '마피아 팀 멤버들입니다.'
+      })
+    })
+    
     // 게임 시작 알림
     io.to(roomCode).emit('game:started', { 
       message: '게임이 시작되었습니다!',
@@ -844,9 +862,9 @@ io.on('connection', (socket) => {
         }
         room.nightVotes.get(targetPlayerId)!.push(socket.id)
         
-        // 다른 마피아들에게 투표 현황 알림
+        // 다른 마피아들에게 투표 현황 알림 (스파이 포함)
         const mafiaTeam = room.players.filter(p => 
-          p.isAlive && getRoleInfo(p.role).team === 'mafia' && getRoleInfo(p.role).canKill
+          p.isAlive && getRoleInfo(p.role).team === 'mafia'
         )
         
         const voteStatus = Array.from(room.nightVotes.entries()).map(([targetId, voters]) => ({

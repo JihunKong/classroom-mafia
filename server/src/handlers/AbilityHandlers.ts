@@ -69,6 +69,7 @@ export class AbilityHandlers {
             targetPlayers: result.delayedEffect.targets,
             isPublic: true,
             triggerPhase: result.delayedEffect.triggerPhase === 'death' ? 'day' as const : result.delayedEffect.triggerPhase as any,
+            triggerDay: result.delayedEffect.triggerPhase === 'day' ? room.day + 1 : undefined,
             message: result.delayedEffect.message
           };
           GameStateManager.addDelayedEffect(room, delayedEffect);
