@@ -35,6 +35,7 @@ export interface Room {
   timeRemaining: number;
   phaseTimer?: ReturnType<typeof setTimeout>;
   isStarted: boolean;
+  dayDuration?: number; // 커스텀 낮 시간 (초 단위, 기본값: 180)
   // Game state
   gameLog: string[];
   nightActions: Map<string, any>;
@@ -74,7 +75,7 @@ export interface GameEvent {
 // Socket event interfaces
 export interface SocketEvents {
   // Room events
-  'room:create': (data: { playerName: string; maxPlayers: number }) => void;
+  'room:create': (data: { playerName: string; maxPlayers: number; dayDuration?: number }) => void;
   'room:join': (data: { playerName: string; roomCode: string }) => void;
   'room:leave': () => void;
   

@@ -33,6 +33,7 @@ function App() {
   // Local state (keeping existing functionality)
   const [playerName, setPlayerName] = useState('')
   const [showTTSSettings, setShowTTSSettings] = useState(false)
+  const [dayDuration, setDayDuration] = useState(60) // 기본값 60초 (1분)
   const roomCodeRef = useRef<string>('')
   const timerRef = useRef<number | null>(null)
   
@@ -418,9 +419,29 @@ function App() {
     })
 
     socket.on('investigate:result', (data: any) => {
-      const targetPlayer = players.find(p => p.id === data.target)
-      const message = `조사 결과: ${targetPlayer?.name}은(는) ${data.result === 'mafia' ? '마피아' : '무고한 시민'}입니다.`
-      setGameLog((prev: string[]) => [...prev, message])
+      // 서버에서는 message만 보내므로 직접 사용
+      setGameLog((prev: string[]) => [...prev, data.message])
+    })
+
+    socket.on('ability:result', (data: any) => {
+      // 능력 사용 결과 (private message)
+      if (data.message) {
+        setGameLog((prev: string[]) => [...prev, data.message])
+      }
+    })
+
+    socket.on('day:announcement', (data: any) => {
+      // 기자의 발표 등 낮 시간 공개 메시지
+      if (data.message) {
+        setGameLog((prev: string[]) => [...prev, `📢 ${data.message}`])
+      }
+    })
+
+    socket.on('day:privateMessage', (data: any) => {
+      // 개인 메시지
+      if (data.message) {
+        setGameLog((prev: string[]) => [...prev, data.message])
+      }
     })
 
     socket.on('game:ended', (data: any) => {
@@ -453,7 +474,10 @@ function App() {
       ;socket.off('vote:confirmed')
       ;socket.off('voting:progress')
       ;socket.off('night:actionConfirmed')
-      ;socket.off('investigate:result')
+      socket.off('investigate:result')
+      socket.off('ability:result')
+      socket.off('day:announcement')
+      socket.off('day:privateMessage')
       ;socket.off('game:ended')
       ;socket.off('error')
     }
@@ -461,7 +485,7 @@ function App() {
 
   const createRoom = () => {
     if (socket && playerName) {
-      ;socket.emit('room:create', { playerName, maxPlayers: 20 })
+      socket.emit('room:create', { playerName, maxPlayers: 20, dayDuration })
     }
   }
 
@@ -544,6 +568,21 @@ function App() {
           />
 
           <div className="space-y-3">
+            <div className="flex items-center space-x-3 mb-3">
+              <label className="text-sm font-medium">낮 시간:</label>
+              <select
+                value={dayDuration}
+                onChange={(e) => setDayDuration(Number(e.target.value))}
+                className="flex-1 p-2 border rounded-lg"
+              >
+                <option value={30}>30초</option>
+                <option value={60}>1분 (기본)</option>
+                <option value={90}>1분 30초</option>
+                <option value={120}>2분</option>
+                <option value={180}>3분</option>
+              </select>
+            </div>
+            
             <button
               onClick={createRoom}
               disabled={!playerName || !isConnected}

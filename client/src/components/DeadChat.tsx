@@ -62,7 +62,7 @@ export const DeadChat: React.FC = () => {
   const sendMessage = () => {
     if (!inputMessage.trim() || !socket || !myPlayer) return;
 
-    ;socket.emit('deadChat:send', {
+    socket.emit('deadChat:send', {
       message: inputMessage.trim()
     });
 
@@ -77,8 +77,15 @@ export const DeadChat: React.FC = () => {
     }
   };
 
+  // 죽은 후 채팅 내역 요청
+  useEffect(() => {
+    if (myPlayer && !myPlayer.isAlive && socket) {
+      socket.emit('deadChat:getHistory');
+    }
+  }, [myPlayer?.isAlive, socket]);
+
   // 살아있는 플레이어는 데드챗 접근 불가
-  if (myPlayer?.isAlive) {
+  if (!myPlayer || myPlayer.isAlive) {
     return null;
   }
 

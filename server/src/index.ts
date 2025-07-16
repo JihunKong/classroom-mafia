@@ -37,6 +37,12 @@ const PORT = process.env.PORT || 3001
 app.use(cors())
 app.use(express.json())
 
+// Debug routes (development only)
+if (process.env.NODE_ENV !== 'production') {
+  app.use('/api/debug', debugRoutes);
+  console.log('Debug routes enabled at /api/debug');
+}
+
 // Determine client build path based on environment
 const clientBuildPath = process.env.CLIENT_BUILD_PATH || 
   (process.env.NODE_ENV === 'production' 
@@ -424,7 +430,7 @@ io.on('connection', (socket) => {
   // Initialize dead chat handlers
   handleDeadChatEvents(io, socket, players)
   
-  socket.on('room:create', ({ playerName, maxPlayers }) => {
+  socket.on('room:create', ({ playerName, maxPlayers, dayDuration }) => {
     try {
       // Input validation
       let sanitizedName;
@@ -458,7 +464,8 @@ io.on('connection', (socket) => {
       nightActions: new Map(),
       actionSubmitted: new Set(),
       nightVotes: new Map(),
-      gameLog: [] as string[]
+      gameLog: [] as string[],
+      dayDuration: dayDuration || 60 // 기본값 1분(60초)
     }
 
     const room = GameStateManager.createEnhancedRoom(baseRoom)
@@ -1112,20 +1119,21 @@ async function startDayPhase(roomCode: string) {
   }
   
   // 낮 페이즈 시작 알림 (토론과 투표 동시 진행)
+  const dayDurationMs = (room.dayDuration || 60) * 1000 // 기본값 60초
   io.to(roomCode).emit('phase:day', {
     phase: 'day',
     day: room.day,
-    timeRemaining: 180000, // 3분 (최대 시간)
+    timeRemaining: dayDurationMs,
     message: `${room.day}일차 낮이 되었습니다. 토론하고 투표하세요.`,
     alivePlayers: room.players.filter(p => p.isAlive),
     canVote: true // 낮 페이즈에서 투표 가능
   })
   
-  // 3분 타이머 설정 (최대 대기 시간)
+  // 커스텀 타이머 설정
   room.phaseTimer = setTimeout(() => {
     // 시간이 다 되면 바로 투표 결과 처리 (별도 투표 페이즈 없이)
     processVotingResults(roomCode)
-  }, 180000)
+  }, dayDurationMs)
 }
 
 function startVotingPhase(roomCode: string) {
